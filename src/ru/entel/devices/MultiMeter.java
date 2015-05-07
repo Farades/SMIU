@@ -5,7 +5,8 @@ import com.adamtaft.eb.EventHandler;
 import ru.entel.events.ModbusDataEvent;
 
 import java.util.HashMap;
-import java.util.Map;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Created by farades on 07.05.2015.
@@ -18,19 +19,26 @@ public class MultiMeter extends AbstractDevice {
     private int regNumb_Ub;
     private int regNumb_Uc;
 
+    private Set<String> masterNames = new HashSet<String>();
+    private Set<String> slaveNames = new HashSet<String>();
+
     public MultiMeter(HashMap<String, Binding> paramsBindings) {
         super(paramsBindings);
         this.regNumb_Ua = this.paramsBindings.get("Ua").getRegNumb();
         this.regNumb_Ub = this.paramsBindings.get("Ub").getRegNumb();
         this.regNumb_Uc = this.paramsBindings.get("Uc").getRegNumb();
+        for (Binding binding : paramsBindings.values()) {
+            masterNames.add(binding.getMasterName());
+            slaveNames.add(binding.getSlaveName());
+        }
         EventBusService.subscribe(this);
     }
 
     public boolean isMyEvent(ModbusDataEvent evt) {
-        String owner = evt.getOwner();
-        for (Map.Entry<String, Binding> entry : paramsBindings.entrySet()) {
-            String slaveName = entry.getValue().getSlaveName();
-            if (owner.equals(slaveName)) return true;
+        String ownerMaster = evt.getOwnerMaster();
+        String ownerSlave = evt.getOwnerSlave();
+        if (this.masterNames.contains(ownerMaster) && this.slaveNames.contains(ownerSlave)) {
+            return true;
         }
         return false;
     }

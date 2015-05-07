@@ -1,4 +1,4 @@
-package ru.entel.protocols.modbus.master;
+package ru.entel.protocols.modbus.rtu.master;
 
 import com.adamtaft.eb.EventBusService;
 import com.ghgande.j2mod.modbus.ModbusException;
@@ -12,7 +12,7 @@ import ru.entel.protocols.modbus.ModbusFunction;
 import ru.entel.protocols.modbus.exception.ModbusIllegalRegTypeException;
 import ru.entel.protocols.modbus.exception.ModbusNoResponseException;
 import ru.entel.protocols.modbus.exception.ModbusRequestException;
-import ru.entel.protocols.modbus.registers.*;
+import ru.entel.protocols.registers.*;
 import ru.entel.protocols.service.ProtocolSlave;
 import ru.entel.protocols.service.ProtocolSlaveParams;
 
@@ -24,6 +24,7 @@ import java.util.Map;
  */
 public class ModbusSlave extends ProtocolSlave {
     private SerialConnection con;
+    private String masterName;
     private String name;
     private int unitId;
     private ModbusFunction mbFunc;
@@ -31,7 +32,7 @@ public class ModbusSlave extends ProtocolSlave {
     private int offset;
     private int length;
     private int transDelay;
-    private Map<Integer, ModbusAbstractRegister> registers = new HashMap<Integer, ModbusAbstractRegister>();
+    private Map<Integer, AbstractRegister> registers = new HashMap<Integer, AbstractRegister>();
 
     public ModbusSlave(ProtocolSlaveParams params) {
         super(params);
@@ -42,6 +43,10 @@ public class ModbusSlave extends ProtocolSlave {
         this.offset = params.getOffset();
         this.length = params.getLength();
         this.transDelay = params.getTransDelay();
+    }
+
+    public void setMasterName(String masterName) {
+        this.masterName = masterName;
     }
 
     @Override
@@ -81,7 +86,7 @@ public class ModbusSlave extends ProtocolSlave {
                     trans.execute();
                     ReadCoilsResponse resp = (ReadCoilsResponse) trans.getResponse();
                     for (int i = 0; i < this.length; i++) {
-                        ModbusBitRegister reg = new ModbusBitRegister(offset + i, resp.getCoils().getBit(i));
+                        BitRegister reg = new BitRegister(offset + i, resp.getCoils().getBit(i));
                         registers.put(offset + i, reg);
                     }
                 } catch (ModbusIOException ex) {
@@ -100,7 +105,7 @@ public class ModbusSlave extends ProtocolSlave {
                     trans.execute();
                     ReadInputDiscretesResponse resp = (ReadInputDiscretesResponse) trans.getResponse();
                     for (int i = 0; i < this.length; i++) {
-                        ModbusBitRegister reg = new ModbusBitRegister(offset + i, resp.getDiscretes().getBit(i));
+                        BitRegister reg = new BitRegister(offset + i, resp.getDiscretes().getBit(i));
                         registers.put(offset + i, reg);
                     }
                 } catch (ModbusIOException ex) {
@@ -127,12 +132,12 @@ public class ModbusSlave extends ProtocolSlave {
 
                         if (this.mbRegType == ModbusRegType.INT16) {
                             for (int i = 0; i < values.length; i++) {
-                                ModbusInt16Register reg = new ModbusInt16Register(this.offset + i, values[i].getValue());
+                                Int16Register reg = new Int16Register(this.offset + i, values[i].getValue());
                                 registers.put(this.offset + i, reg);
                             }
                         } else if (this.mbRegType == ModbusRegType.FLOAT32) {
                             for (int i = 0; i < resp.getWordCount() - 1; i+=2) {
-                                ModbusFloat32Register reg = new ModbusFloat32Register(offset + i, values[i].getValue(), values[i + 1].getValue());
+                                Float32Register reg = new Float32Register(offset + i, values[i].getValue(), values[i + 1].getValue());
                                 registers.put(this.offset + i, reg);
                             }
                         } else {
@@ -153,12 +158,12 @@ public class ModbusSlave extends ProtocolSlave {
                     ReadInputRegistersResponse resp = (ReadInputRegistersResponse) trans.getResponse();
                     if (this.mbRegType == ModbusRegType.INT16) {
                         for (int n = 0; n < resp.getWordCount(); n++) {
-                            ModbusInt16Register reg = new ModbusInt16Register(this.offset + n, resp.getRegisterValue(n));
+                            Int16Register reg = new Int16Register(this.offset + n, resp.getRegisterValue(n));
                             registers.put(offset + n, reg);
                         }
                     } else if (this.mbRegType == ModbusRegType.FLOAT32) {
                         for (int i = 0; i < resp.getWordCount()-1; i+=2) {
-                            ModbusFloat32Register reg = new ModbusFloat32Register(offset + i, resp.getRegisterValue(i), resp.getRegisterValue(i+1));
+                            Float32Register reg = new Float32Register(offset + i, resp.getRegisterValue(i), resp.getRegisterValue(i+1));
                             registers.put(this.offset + i, reg);
                         }
                     } else {
@@ -173,7 +178,7 @@ public class ModbusSlave extends ProtocolSlave {
             }
         }
         //TODO перенести общение с шиной в тело, разобраться с исключениями и стабильной работой
-        EventBusService.publish(new ModbusDataEvent(this.name, this.registers));
+        EventBusService.publish(new ModbusDataEvent(this.masterName, this.name, this.registers));
     }
 
     public void setCon(SerialConnection con) {

@@ -1,4 +1,4 @@
-package ru.entel.protocols.modbus.registers;
+package ru.entel.protocols.registers;
 
 import com.ghgande.j2mod.modbus.util.ModbusUtil;
 
@@ -7,12 +7,12 @@ import java.nio.ByteBuffer;
 /**
  * Created by farades on 07.05.2015.
  */
-public class ModbusFloat32Register extends ModbusAbstractRegister {
+public class Float32Register extends AbstractRegister {
     private ModbusRegType regType;
     private Integer tempValue1;
     private Integer tempValue2;
 
-    public ModbusFloat32Register(int regNumb, int value1, int value2) {
+    public Float32Register(int regNumb, int value1, int value2) {
         this.regType = ModbusRegType.FLOAT32;
         this.regNumb = regNumb;
         this.tempValue1 = value1;

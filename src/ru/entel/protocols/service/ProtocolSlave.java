@@ -11,5 +11,5 @@ public abstract class ProtocolSlave {
     public ProtocolSlave(ProtocolSlaveParams params) {
     }
 
-    public abstract void request() throws ModbusIllegalRegTypeException, ModbusRequestException, ModbusNoResponseException;
+    public abstract void request() throws Exception;
 }

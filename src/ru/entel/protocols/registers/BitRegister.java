@@ -1,12 +1,12 @@
-package ru.entel.protocols.modbus.registers;
+package ru.entel.protocols.registers;
 
 /**
  * Created by farades on 07.05.2015.
  */
-public class ModbusBitRegister extends ModbusAbstractRegister {
+public class BitRegister extends AbstractRegister {
     private ModbusRegType regType;
 
-    public ModbusBitRegister(int regNumb, boolean value) {
+    public BitRegister(int regNumb, boolean value) {
         this.regType = ModbusRegType.BIT;
         this.regNumb = regNumb;
         this.value = value ? 1 : 0;

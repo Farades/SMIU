@@ -1,4 +1,4 @@
-package ru.entel.protocols.modbus.master;
+package ru.entel.protocols.modbus.rtu.master;
 
 import com.ghgande.j2mod.modbus.ModbusCoupler;
 import com.ghgande.j2mod.modbus.net.SerialConnection;
@@ -18,8 +18,8 @@ public class ModbusMaster extends ProtocolMaster {
     private HashSet<ModbusSlave> slaves = new HashSet<ModbusSlave>();
     public volatile boolean running = true;
 
-    public ModbusMaster(ProtocolMasterParams params) {
-        super(params);
+    public ModbusMaster(String name, ProtocolMasterParams params) {
+        super(name, params);
         this.timePause = params.getTimePause();
         ModbusCoupler.getReference().setUnitID(128);
         SerialParameters SerialParams = new SerialParameters();
@@ -36,6 +36,7 @@ public class ModbusMaster extends ProtocolMaster {
     @Override
     public void addSlave(ProtocolSlave slave) {
         ModbusSlave mbSlave = (ModbusSlave) slave;
+        mbSlave.setMasterName(this.name);
         mbSlave.setCon(this.con);
         slaves.add(mbSlave);
     }

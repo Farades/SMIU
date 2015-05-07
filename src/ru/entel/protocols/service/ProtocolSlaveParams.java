@@ -1,7 +1,7 @@
 package ru.entel.protocols.service;
 
 import ru.entel.protocols.modbus.ModbusFunction;
-import ru.entel.protocols.modbus.registers.ModbusRegType;
+import ru.entel.protocols.registers.ModbusRegType;
 
 /**
  * Created by farades on 07.05.2015.

@@ -1,9 +1,9 @@
-package ru.entel.protocols.modbus.registers;
+package ru.entel.protocols.registers;
 
 /**
  * Created by farades on 07.05.2015.
  */
-public class ModbusAbstractRegister {
+public class AbstractRegister {
     protected int regNumb;
     protected Number value;
 
