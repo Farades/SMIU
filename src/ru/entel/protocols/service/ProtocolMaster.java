@@ -1,14 +1,28 @@
 package ru.entel.protocols.service;
 
 /**
- * Created by farades on 07.05.2015.
+ * ProtocolMaster - абстрактный класс, наследуемый от интерфейса Runnable.
+ * Является потомком для всех мастеров протоколов. Необходим в качестве полимфорного типа.
+ * @author Мацепура Артем
+ * @version 0.1
  */
 public abstract class ProtocolMaster implements Runnable {
+    /**
+     * name название конкретного мастера протокола. Например: modbus_in, onewire
+     */
     protected String name;
-    //Конструктор, запрещающий использовать конструктор по умолчанию для потомков
+
+    /**
+     * Конструктор. Заставляет всех переопределять метод init, что гарантирует использование параметров.
+     * @param name название данного мастера.
+     * @param params объект, содержащий в себе необходимые параметры для инициализации мастера.
+     */
     public ProtocolMaster(String name, ProtocolMasterParams params) {
         this.name = name;
+        init(params);
     }
 
     public abstract void addSlave(ProtocolSlave slave);
+
+    public abstract void init(ProtocolMasterParams params);
 }

@@ -8,12 +8,12 @@ import java.nio.ByteBuffer;
  * Created by farades on 07.05.2015.
  */
 public class Float32Register extends AbstractRegister {
-    private ModbusRegType regType;
+    private RegType regType;
     private Integer tempValue1;
     private Integer tempValue2;
 
     public Float32Register(int regNumb, int value1, int value2) {
-        this.regType = ModbusRegType.FLOAT32;
+        this.regType = RegType.FLOAT32;
         this.regNumb = regNumb;
         this.tempValue1 = value1;
         this.tempValue2 = value2;

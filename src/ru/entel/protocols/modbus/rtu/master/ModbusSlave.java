@@ -25,24 +25,31 @@ import java.util.Map;
 public class ModbusSlave extends ProtocolSlave {
     private SerialConnection con;
     private String masterName;
-    private String name;
     private int unitId;
     private ModbusFunction mbFunc;
-    private ModbusRegType mbRegType;
+    private RegType mbRegType;
     private int offset;
     private int length;
     private int transDelay;
     private Map<Integer, AbstractRegister> registers = new HashMap<Integer, AbstractRegister>();
 
-    public ModbusSlave(ProtocolSlaveParams params) {
-        super(params);
-        this.name = params.getName();
-        this.unitId = params.getUnitId();
-        this.mbFunc = params.getMbFunc();
-        this.mbRegType = params.getMbRegType();
-        this.offset = params.getOffset();
-        this.length = params.getLength();
-        this.transDelay = params.getTransDelay();
+    public ModbusSlave(String name, ModbusSlaveParams params) {
+        super(name, params);
+    }
+
+    @Override
+    public void init(ProtocolSlaveParams params) {
+        if (params instanceof ModbusSlaveParams) {
+            ModbusSlaveParams mbParams = (ModbusSlaveParams) params;
+            this.unitId = mbParams.getUnitId();
+            this.mbFunc = mbParams.getMbFunc();
+            this.mbRegType = mbParams.getMbRegType();
+            this.offset = mbParams.getOffset();
+            this.length = mbParams.getLength();
+            this.transDelay = mbParams.getTransDelay();
+        } else {
+            //TODO добавить исключение
+        }
     }
 
     public void setMasterName(String masterName) {
@@ -79,7 +86,7 @@ public class ModbusSlave extends ProtocolSlave {
         trans.setTransDelayMS(this.transDelay);
         switch (mbFunc) {
             case READ_COIL_REGS_1: {
-                if (this.mbRegType != ModbusRegType.BIT) {
+                if (this.mbRegType != RegType.BIT) {
                     throw new ModbusIllegalRegTypeException("Illegal reg type for READ_COIL_REGS_1");
                 }
                 try {
@@ -98,7 +105,7 @@ public class ModbusSlave extends ProtocolSlave {
                 break;
             }
             case READ_DISCRETE_INPUT_2: {
-                if (this.mbRegType != ModbusRegType.BIT) {
+                if (this.mbRegType != RegType.BIT) {
                     throw new ModbusIllegalRegTypeException("Illegal reg type for READ_DISCRETE_INPUT_2");
                 }
                 try {
@@ -130,12 +137,12 @@ public class ModbusSlave extends ProtocolSlave {
                         ReadMultipleRegistersResponse resp = (ReadMultipleRegistersResponse)tempResp;
                         Register[] values = resp.getRegisters();
 
-                        if (this.mbRegType == ModbusRegType.INT16) {
+                        if (this.mbRegType == RegType.INT16) {
                             for (int i = 0; i < values.length; i++) {
                                 Int16Register reg = new Int16Register(this.offset + i, values[i].getValue());
                                 registers.put(this.offset + i, reg);
                             }
-                        } else if (this.mbRegType == ModbusRegType.FLOAT32) {
+                        } else if (this.mbRegType == RegType.FLOAT32) {
                             for (int i = 0; i < resp.getWordCount() - 1; i+=2) {
                                 Float32Register reg = new Float32Register(offset + i, values[i].getValue(), values[i + 1].getValue());
                                 registers.put(this.offset + i, reg);
@@ -156,12 +163,12 @@ public class ModbusSlave extends ProtocolSlave {
                 try {
                     trans.execute();
                     ReadInputRegistersResponse resp = (ReadInputRegistersResponse) trans.getResponse();
-                    if (this.mbRegType == ModbusRegType.INT16) {
+                    if (this.mbRegType == RegType.INT16) {
                         for (int n = 0; n < resp.getWordCount(); n++) {
                             Int16Register reg = new Int16Register(this.offset + n, resp.getRegisterValue(n));
                             registers.put(offset + n, reg);
                         }
-                    } else if (this.mbRegType == ModbusRegType.FLOAT32) {
+                    } else if (this.mbRegType == RegType.FLOAT32) {
                         for (int i = 0; i < resp.getWordCount()-1; i+=2) {
                             Float32Register reg = new Float32Register(offset + i, resp.getRegisterValue(i), resp.getRegisterValue(i+1));
                             registers.put(this.offset + i, reg);
