@@ -20,17 +20,53 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Created by farades on 07.05.2015.
+ * Класс ModbusSlave - потомок ProtocolSlave.
+ * Отвечает за составление запросов, обработку и отправку
+ * в EventBus полученной информации от Slave устройств
+ * @author Мацепура Артем
+ * @version 0.1
  */
 public class ModbusSlave extends ProtocolSlave {
+    /**
+     * Объект для коммункации с COM-портом.
+     */
     private SerialConnection con;
+
     private String masterName;
+
+    /**
+     * Адрес slave устройства для обращение по Modbus
+     */
     private int unitId;
+
+    /**
+     * Номер функции Modbus по которой происходит обращение к Slave устройству
+     */
     private ModbusFunction mbFunc;
+
+    /**
+     * Тип запрашиваемых регистров (INT16, FLOAT32, BIT)
+     */
     private RegType mbRegType;
+
+    /**
+     * Номер первого запрашиваемого регистра
+     */
     private int offset;
+
+    /**
+     * Количество запрашиваемых регистров
+     */
     private int length;
+
+    /**
+     * Таймаут отклика (время ожидания ответа от физического устройства)
+     */
     private int transDelay;
+
+    /**
+     * Коллекция в которой хранятся последние значения обработанных регистров
+     */
     private Map<Integer, AbstractRegister> registers = new HashMap<Integer, AbstractRegister>();
 
     public ModbusSlave(String name, ModbusSlaveParams params) {
@@ -48,7 +84,7 @@ public class ModbusSlave extends ProtocolSlave {
             this.length = mbParams.getLength();
             this.transDelay = mbParams.getTransDelay();
         } else {
-            //TODO добавить исключение
+            throw new IllegalArgumentException("Modbus slave params not instance of ModbusSlaveParams");
         }
     }
 

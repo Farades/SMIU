@@ -33,11 +33,25 @@ public class ModbusDataEvent extends Event {
         return ownerSlave;
     }
 
+    public String getOwnerID() {
+        return this.ownerMaster + ":" + this.ownerSlave;
+    }
+
     public LocalDateTime getTimeCreate() {
         return timeCreate;
     }
 
     public Map<Integer, AbstractRegister> getData() {
         return data;
+    }
+
+    @Override
+    public String toString() {
+        return "ModbusDataEvent{" +
+                "ownerMaster='" + ownerMaster + '\'' +
+                ", ownerSlave='" + ownerSlave + '\'' +
+                ", data=" + data +
+                ", timeCreate=" + timeCreate +
+                '}';
     }
 }

@@ -18,11 +18,28 @@ public class Binding {
         return masterName;
     }
 
+    public String getRegID() {
+        return this.slaveName + ":" + this.regNumb;
+    }
+
+    public String getChannelID() {
+        return this.masterName + ":" + this.slaveName;
+    }
+
     public String getSlaveName() {
         return slaveName;
     }
 
     public int getRegNumb() {
         return regNumb;
+    }
+
+    @Override
+    public String toString() {
+        return "Binding{" +
+                "masterName='" + masterName + '\'' +
+                ", slaveName='" + slaveName + '\'' +
+                ", regNumb=" + regNumb +
+                '}';
     }
 }
