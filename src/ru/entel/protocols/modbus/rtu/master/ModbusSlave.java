@@ -132,11 +132,11 @@ public class ModbusSlave extends ProtocolSlave {
                         BitRegister reg = new BitRegister(offset + i, resp.getCoils().getBit(i));
                         registers.put(offset + i, reg);
                     }
+                    EventBusService.publish(new ModbusDataEvent(this.masterName, this.name, this.registers));
                 } catch (ModbusIOException ex) {
-                    //TODO
-                    throw new ModbusRequestException("TODO");
+                    throw new ModbusRequestException(ex.getMessage());
                 } catch (ModbusException ex) {
-                    ex.printStackTrace();
+                    throw new ModbusRequestException(ex.getMessage());
                 }
                 break;
             }
@@ -151,11 +151,11 @@ public class ModbusSlave extends ProtocolSlave {
                         BitRegister reg = new BitRegister(offset + i, resp.getDiscretes().getBit(i));
                         registers.put(offset + i, reg);
                     }
+                    EventBusService.publish(new ModbusDataEvent(this.masterName, this.name, this.registers));
                 } catch (ModbusIOException ex) {
-                    //TODO
-                    throw new ModbusRequestException("TODO");
+                    throw new ModbusRequestException(ex.getMessage());
                 } catch (ModbusException ex) {
-                    ex.printStackTrace();
+                    throw new ModbusRequestException(ex.getMessage());
                 }
                 break;
             }
@@ -178,20 +178,33 @@ public class ModbusSlave extends ProtocolSlave {
                                 Int16Register reg = new Int16Register(this.offset + i, values[i].getValue());
                                 registers.put(this.offset + i, reg);
                             }
+                            EventBusService.publish(new ModbusDataEvent(this.masterName, this.name, this.registers));
+                        } else if (this.mbRegType == RegType.INT16DIV100) {
+                            for (int i = 0; i < values.length; i++) {
+                                Int16Div100Register reg = new Int16Div100Register(this.offset + i, values[i].getValue());
+                                registers.put(this.offset + i, reg);
+                            }
+                            EventBusService.publish(new ModbusDataEvent(this.masterName, this.name, this.registers));
+                        } else if(this.mbRegType == RegType.INT16DIV10) {
+                            for (int i = 0; i < values.length; i++) {
+                                Int16Div10Register reg = new Int16Div10Register(this.offset + i, values[i].getValue());
+                                registers.put(this.offset + i, reg);
+                            }
+                            EventBusService.publish(new ModbusDataEvent(this.masterName, this.name, this.registers));
                         } else if (this.mbRegType == RegType.FLOAT32) {
                             for (int i = 0; i < resp.getWordCount() - 1; i+=2) {
                                 Float32Register reg = new Float32Register(offset + i, values[i].getValue(), values[i + 1].getValue());
                                 registers.put(this.offset + i, reg);
                             }
+                            EventBusService.publish(new ModbusDataEvent(this.masterName, this.name, this.registers));
                         } else {
                             throw new ModbusIllegalRegTypeException("Illegal reg type for READ_HOLDING_REGS_3");
                         }
                     }
                 } catch (ModbusIOException ex) {
-                    //TODO
-                    throw new ModbusRequestException("TODO");
+                    throw new ModbusRequestException(ex.getMessage());
                 } catch (ModbusException ex) {
-                    ex.printStackTrace();
+                    throw new ModbusRequestException(ex.getMessage());
                 }
                 break;
             }
@@ -204,24 +217,36 @@ public class ModbusSlave extends ProtocolSlave {
                             Int16Register reg = new Int16Register(this.offset + n, resp.getRegisterValue(n));
                             registers.put(offset + n, reg);
                         }
+                        EventBusService.publish(new ModbusDataEvent(this.masterName, this.name, this.registers));
                     } else if (this.mbRegType == RegType.FLOAT32) {
                         for (int i = 0; i < resp.getWordCount()-1; i+=2) {
                             Float32Register reg = new Float32Register(offset + i, resp.getRegisterValue(i), resp.getRegisterValue(i+1));
                             registers.put(this.offset + i, reg);
                         }
+                        EventBusService.publish(new ModbusDataEvent(this.masterName, this.name, this.registers));
+                    } else if (this.mbRegType == RegType.INT16DIV10) {
+                        for (int n = 0; n < resp.getWordCount(); n++) {
+                            Int16Div10Register reg = new Int16Div10Register(this.offset + n, resp.getRegisterValue(n));
+                            registers.put(offset + n, reg);
+                        }
+                        EventBusService.publish(new ModbusDataEvent(this.masterName, this.name, this.registers));
+                    } else if (this.mbRegType == RegType.INT16DIV100) {
+                        for (int n = 0; n < resp.getWordCount(); n++) {
+                            Int16Div100Register reg = new Int16Div100Register(this.offset + n, resp.getRegisterValue(n));
+                            registers.put(offset + n, reg);
+                        }
+                        EventBusService.publish(new ModbusDataEvent(this.masterName, this.name, this.registers));
                     } else {
                         throw new ModbusIllegalRegTypeException("Illegal reg type for READ_INPUT_REGS_4");
                     }
                 } catch (ModbusIOException ex) {
-                    //TODO
-                    throw new ModbusRequestException("TODO");
+                    throw new ModbusRequestException(ex.getMessage());
                 } catch (ModbusException ex) {
-                    ex.printStackTrace();
+                    throw new ModbusRequestException(ex.getMessage());
                 }
+                break;
             }
         }
-        //TODO перенести общение с шиной в тело, разобраться с исключениями и стабильной работой
-        EventBusService.publish(new ModbusDataEvent(this.masterName, this.name, this.registers));
     }
 
     public void setCon(SerialConnection con) {

@@ -20,6 +20,11 @@ import java.util.Set;
  */
 public class Device extends AbstractDevice {
     /**
+     * Название устройства
+     */
+    private String name;
+
+    /**
      * Коллекция, хранящая актуальные значения параметров по всем каналам для данного устройства
      */
     private Map<String, AbstractRegister> values = new HashMap<String, AbstractRegister>();
@@ -40,8 +45,9 @@ public class Device extends AbstractDevice {
      *                       а значением является объект класса Binding.
      * @throws InitParamBindingsException Исключение, вызываемое передачей некорректных биндингов.
      */
-    public Device(HashMap<String, Binding> paramsBindings) throws InitParamBindingsException {
+    public Device(String name, HashMap<String, Binding> paramsBindings) throws InitParamBindingsException {
         super(paramsBindings);
+        this.name = name;
         if ((paramsBindings == null) || (paramsBindings.size() == 0)) {
             throw new InitParamBindingsException("Params bindings incorrect (==null or size == 0)");
         }
@@ -81,6 +87,7 @@ public class Device extends AbstractDevice {
     @EventHandler
     public void handleModbusDataEvent(ModbusDataEvent evt) throws IncorrectDeviceBindingException{
         if (isMyEvent(evt)) {
+//            System.out.println(evt);
             for (Map.Entry<String, Binding> cbEntrySet : channelsBindings.get(evt.getOwnerID()).entrySet()) {
                 AbstractRegister value = null;
                 for (Map.Entry<Integer, AbstractRegister> valuesEntrySet : evt.getData().entrySet()) {
@@ -95,7 +102,13 @@ public class Device extends AbstractDevice {
                     throw new IncorrectDeviceBindingException("No register for binding: " + cbEntrySet.getValue());
                 }
             }
-            System.out.println(this.values);
+            System.out.println(this);
         }
+    }
+
+    @Override
+    public String toString() {
+        return "[" + this.name + "] "
+                + this.values;
     }
 }
