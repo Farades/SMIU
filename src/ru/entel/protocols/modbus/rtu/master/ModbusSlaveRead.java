@@ -20,13 +20,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Класс ModbusSlave - потомок ProtocolSlave.
+ * Класс ModbusSlaveRead - потомок ProtocolSlave.
  * Отвечает за составление запросов, обработку и отправку
  * в EventBus полученной информации от Slave устройств
  * @author Мацепура Артем
  * @version 0.2
  */
-public class ModbusSlave extends ProtocolSlave {
+public class ModbusSlaveRead extends ProtocolSlave {
     /**
      * Объект для коммункации с COM-портом.
      */
@@ -75,16 +75,16 @@ public class ModbusSlave extends ProtocolSlave {
     /**
      * Конструктор
      * @param name Имя данного слейва
-     * @param params Объект класса ModbusSlaveParams, хранящий в себе все необходимые параметры для работы ModbusSlave
+     * @param params Объект класса ModbusSlaveParams, хранящий в себе все необходимые параметры для работы ModbusSlaveRead
      */
-    public ModbusSlave(String name, ModbusSlaveParams params) {
+    public ModbusSlaveRead(String name, ModbusSlaveParams params) {
         super(name, params);
     }
 
     /**
      * Переопределенный метод родительского класса ProtocolSlave.
      * Необходим для принудительного создания конструктора, принимающего ProtocolSlaveParams.
-     * @param params Объект класса ProtocolSlaveParams, содержащий в себе все необходимые параметры для работы ModbusSlave
+     * @param params Объект класса ProtocolSlaveParams, содержащий в себе все необходимые параметры для работы ModbusSlaveRead
      */
     @Override
     public void init(ProtocolSlaveParams params) {
@@ -108,7 +108,7 @@ public class ModbusSlave extends ProtocolSlave {
 
     /**
      * request() - переопределенный метод родительского класса ProtocolSlave.
-     * Является основным для ModbusSlave. Этот метод инициирует запрос данных с помощью объекта SerialConnection
+     * Является основным для ModbusSlaveRead. Этот метод инициирует запрос данных с помощью объекта SerialConnection
      * по протоколу ModBus, обрабатывает полученные в ответ данные и пересылает их в программную шину EventBus.
      * Метод синхронизирован для потокобезопасности.
      * @throws ModbusIllegalRegTypeException Неверный тип регистров.

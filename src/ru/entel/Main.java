@@ -6,7 +6,7 @@ import ru.entel.devices.exceptions.InitParamBindingsException;
 import ru.entel.protocols.modbus.ModbusFunction;
 import ru.entel.protocols.modbus.rtu.master.ModbusMaster;
 import ru.entel.protocols.modbus.rtu.master.ModbusMasterParams;
-import ru.entel.protocols.modbus.rtu.master.ModbusSlave;
+import ru.entel.protocols.modbus.rtu.master.ModbusSlaveRead;
 import ru.entel.protocols.modbus.rtu.master.ModbusSlaveParams;
 import ru.entel.protocols.registers.RegType;
 import ru.entel.protocols.service.*;
@@ -19,10 +19,10 @@ public class Main {
         ProtocolMaster mbMaster = new ModbusMaster("modbus_in", masterParams);
 
         ModbusSlaveParams slave1Params = new ModbusSlaveParams(1, ModbusFunction.READ_COIL_REGS_1, RegType.BIT, 0, 6, 50);
-        mbMaster.addSlave(new ModbusSlave("slave1_1", slave1Params));
+        mbMaster.addSlave(new ModbusSlaveRead("slave1_1", slave1Params));
 
         ModbusSlaveParams slave2Params = new ModbusSlaveParams(1, ModbusFunction.READ_HOLDING_REGS_3, RegType.INT16, 1, 3, 50);
-        mbMaster.addSlave(new ModbusSlave("slave1_2", slave2Params));
+        mbMaster.addSlave(new ModbusSlaveRead("slave1_2", slave2Params));
 
         HashMap<String, Binding> elnetBindings = new HashMap<String, Binding>();
         elnetBindings.put("Ua", new Binding("modbus_in", "slave1_2", 1));

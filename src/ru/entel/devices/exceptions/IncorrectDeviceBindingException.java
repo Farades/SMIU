@@ -1,7 +1,8 @@
 package ru.entel.devices.exceptions;
 
 /**
- * Created by farades on 12.05.2015.
+ * IncorrectDeviceBindingException исключение, выбрасываемое при некорректном биндинге.
+ * Например: регистр, описанный в биндинге не опрашивается в данном Slave устройстве.
  */
 public class IncorrectDeviceBindingException extends Exception {
     public IncorrectDeviceBindingException(String s) {

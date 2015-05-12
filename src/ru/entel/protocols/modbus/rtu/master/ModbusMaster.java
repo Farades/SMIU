@@ -13,28 +13,28 @@ import java.util.HashSet;
  * Класс ModbusMaster - потомок ProtocolMaster.
  * Реализует интерфейс Runnable.
  * Отвечает за добавление, хранение и управление
- * объектами класса ModbusSlave в отдельном потоке.
+ * объектами класса ModbusSlaveRead в отдельном потоке.
  * @author Мацепура Артем
  * @version 0.1
  */
 public class ModbusMaster extends ProtocolMaster {
     /**
-     * Объект для коммункации с COM-портом. Передается каждому ModbusSlave при добавлении
+     * Объект для коммункации с COM-портом. Передается каждому ModbusSlaveRead при добавлении
      */
     private SerialConnection con;
 
     /**
-     * Время задержки между вызовами метода request у объектов ModbusSlave
+     * Время задержки между вызовами метода request у объектов ModbusSlaveRead
      */
     private int timePause;
 
     /**
-     * Коллекция в которой хранятся все объекты ModbusSlave для данного мастера
+     * Коллекция в которой хранятся все объекты ModbusSlaveRead для данного мастера
      */
-    private HashSet<ModbusSlave> slaves = new HashSet<ModbusSlave>();
+    private HashSet<ModbusSlaveRead> slaves = new HashSet<ModbusSlaveRead>();
 
     /**
-     * Флаг для остановки отдельного потока опроса объектов ModbusSlave
+     * Флаг для остановки отдельного потока опроса объектов ModbusSlaveRead
      */
     public volatile boolean running = true;
 
@@ -69,12 +69,12 @@ public class ModbusMaster extends ProtocolMaster {
     }
 
     /**
-     * Метод, добавляющий ModbusSlave в коллекцию данного ModbusMaster для последующего опроса.
-     * @param slave Объект типа ModbusSlave, суженный до родительского типа ProtocolSlave.
+     * Метод, добавляющий ModbusSlaveRead в коллекцию данного ModbusMaster для последующего опроса.
+     * @param slave Объект типа ModbusSlaveRead, суженный до родительского типа ProtocolSlave.
      */
     @Override
     public void addSlave(ProtocolSlave slave) {
-        ModbusSlave mbSlave = (ModbusSlave) slave;
+        ModbusSlaveRead mbSlave = (ModbusSlaveRead) slave;
         mbSlave.setMasterName(this.name);
         mbSlave.setCon(this.con);
         slaves.add(mbSlave);
@@ -99,14 +99,14 @@ public class ModbusMaster extends ProtocolMaster {
     }
 
     /**
-     * Реализация интерфейса Runnable. Необходима для бесконечного цикла опроса ModbusSlave в отдельном потоке.
+     * Реализация интерфейса Runnable. Необходима для бесконечного цикла опроса ModbusSlaveRead в отдельном потоке.
      */
     @Override
     public void run() {
         if (slaves.size() != 0) {
             openPort();
             while(running) {
-                for (ModbusSlave slave : slaves) {
+                for (ModbusSlaveRead slave : slaves) {
                     try {
                         slave.request();
                         Thread.sleep(timePause);

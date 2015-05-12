@@ -7,7 +7,7 @@ import java.util.Map;
 
 /**
  * Класс ModbusDataEvent - потом класса Event.
- * Служит дял передачи информации из ModbusSlave в EventBusService.
+ * Служит дял передачи информации из ModbusSlaveRead в EventBusService.
  * В последующем обрабатываются handler в объектах конечных устройств.
  * @author Мацепура Артем
  * @version 0.1
