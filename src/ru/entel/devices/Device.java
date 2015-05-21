@@ -90,7 +90,6 @@ public class Device extends AbstractDevice {
     @EventHandler
     public void handleModbusDataEvent(ModbusDataEvent evt) throws IncorrectDeviceBindingException{
         if (isMyEvent(evt)) {
-//            System.out.println(evt);
             for (Map.Entry<String, Binding> cbEntrySet : channelsBindings.get(evt.getOwnerID()).entrySet()) {
                 AbstractRegister value = null;
                 for (Map.Entry<Integer, AbstractRegister> valuesEntrySet : evt.getData().entrySet()) {

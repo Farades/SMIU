@@ -282,6 +282,7 @@ public class ModbusSlaveRead extends ProtocolSlave {
                 break;
             }
         }
+        logger.info("\"" + this.masterName + ":" + this.name + "\" update registers " + this.registers);
     }
 
     public void setCon(SerialConnection con) {
