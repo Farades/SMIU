@@ -1,10 +1,12 @@
 package ru.entel.devices;
 
-import com.adamtaft.eb.EventBusService;
-import com.adamtaft.eb.EventHandler;
+import net.engio.mbassy.listener.Handler;
+import net.engio.mbassy.listener.Listener;
+import net.engio.mbassy.listener.References;
 import org.apache.log4j.Logger;
 import ru.entel.devices.exceptions.IncorrectDeviceBindingException;
 import ru.entel.devices.exceptions.InitParamBindingsException;
+import ru.entel.events.EventBusService;
 import ru.entel.events.ModbusDataEvent;
 import ru.entel.protocols.registers.AbstractRegister;
 import ru.entel.protocols.registers.ZeroRegister;
@@ -19,6 +21,7 @@ import java.util.Set;
  * @author Мацепура Артем
  * @version 0.1
  */
+@Listener(references= References.Strong)
 public class Device extends AbstractDevice {
     private static final Logger logger = Logger.getLogger(AbstractDevice.class);
 
@@ -71,7 +74,7 @@ public class Device extends AbstractDevice {
         for (Binding binding : paramsBindings.values()) {
             channelsId.add(binding.getChannelID());
         }
-        EventBusService.subscribe(this);
+        EventBusService.getModbusBus().subscribe(this);
     }
 
     /**
@@ -87,7 +90,7 @@ public class Device extends AbstractDevice {
      * Метод handleModbusDataEvent обрабатывает ModbusDataEvent в программной шине EventBusService
      * @param evt Event, который необходимо обработать
      */
-    @EventHandler
+    @Handler
     public void handleModbusDataEvent(ModbusDataEvent evt) throws IncorrectDeviceBindingException{
         if (isMyEvent(evt)) {
             for (Map.Entry<String, Binding> cbEntrySet : channelsBindings.get(evt.getOwnerID()).entrySet()) {
@@ -107,7 +110,6 @@ public class Device extends AbstractDevice {
             logger.debug("\"" + this.name +"\" update values: " + this.values);
         }
     }
-
     @Override
     public String toString() {
         return "[" + this.name + "] "
