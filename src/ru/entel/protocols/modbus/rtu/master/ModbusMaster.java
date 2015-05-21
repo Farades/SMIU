@@ -52,7 +52,7 @@ public class ModbusMaster extends ProtocolMaster {
      */
     public ModbusMaster(String name, ModbusMasterParams params) {
         super(name, params);
-        logger.debug("Modbus master initialize.");
+        logger.debug(this.name + " initialize.");
     }
 
     @Override
@@ -85,7 +85,7 @@ public class ModbusMaster extends ProtocolMaster {
         mbSlave.setMasterName(this.name);
         mbSlave.setCon(this.con);
         slaves.add(mbSlave);
-        logger.debug("ModbusSlave add: " + slave);
+        logger.debug("Add: " + slave);
     }
 
     /**
@@ -94,10 +94,10 @@ public class ModbusMaster extends ProtocolMaster {
     public void openPort() {
         try {
             this.con.open();
-            logger.info("ModbusMaster \"" + this.name + "\" open Com-port connection");
+            logger.info("\"" + this.name + "\" open Com-port connection");
         } catch (Exception ex) {
             ex.printStackTrace();
-            logger.error("ModbusMaster \"" + this.name + "\" unable to connect to Com-port");
+            logger.error("\"" + this.name + "\" unable to connect to Com-port");
         }
     }
 
@@ -106,7 +106,7 @@ public class ModbusMaster extends ProtocolMaster {
      */
     public void closePort() {
         this.con.close();
-        logger.info("ModbusMaster \"" + this.name + "\" close Com-port connection");
+        logger.info("\"" + this.name + "\" close Com-port connection");
     }
 
     /**
@@ -124,11 +124,11 @@ public class ModbusMaster extends ProtocolMaster {
                     } catch (InterruptedException ex) {
                         ex.printStackTrace();
                     } catch (ModbusRequestException ex) {
-                        logger.error("ModbusSlaveRead \"" + slave + "\" " + ex.getMessage());
+                        logger.error("\"" + slave + "\" " + ex.getMessage());
                     } catch (ModbusIllegalRegTypeException ex) {
-                        logger.error("ModbusSlaveRead \"" + slave + "\" " + ex.getMessage());
+                        logger.error("\"" + slave + "\" " + ex.getMessage());
                     } catch (ModbusNoResponseException ex) {
-                        logger.error("ModbusSlaveRead \"" + slave + "\" " + ex.getMessage());
+                        logger.error("\"" + slave + "\" " + ex.getMessage());
                     }
                 }
             }

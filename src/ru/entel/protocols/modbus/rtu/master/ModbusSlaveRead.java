@@ -120,7 +120,7 @@ public class ModbusSlaveRead extends ProtocolSlave {
     @Override
     public synchronized void request() throws ModbusIllegalRegTypeException, ModbusRequestException, ModbusNoResponseException {
         ModbusRequest req;
-        logger.info("ModbusSlaveRead \"" + this.masterName + ":" + this.name + "\" sending request");
+        logger.info("\"" + this.masterName + ":" + this.name + "\" sending request.");
         switch (mbFunc) {
             case READ_COIL_REGS_1: {
                 req = new ReadCoilsRequest(offset, length);

@@ -2,6 +2,7 @@ package ru.entel.devices;
 
 import com.adamtaft.eb.EventBusService;
 import com.adamtaft.eb.EventHandler;
+import org.apache.log4j.Logger;
 import ru.entel.devices.exceptions.IncorrectDeviceBindingException;
 import ru.entel.devices.exceptions.InitParamBindingsException;
 import ru.entel.events.ModbusDataEvent;
@@ -19,6 +20,8 @@ import java.util.Set;
  * @version 0.1
  */
 public class Device extends AbstractDevice {
+    private static final Logger logger = Logger.getLogger(AbstractDevice.class);
+
     /**
      * Название устройства
      */
@@ -102,7 +105,7 @@ public class Device extends AbstractDevice {
                     throw new IncorrectDeviceBindingException("No register for binding: " + cbEntrySet.getValue());
                 }
             }
-            System.out.println(this);
+            logger.debug("\"" + this.name +"\" update values: " + this.values);
         }
     }
 
