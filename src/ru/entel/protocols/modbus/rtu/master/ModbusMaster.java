@@ -3,6 +3,10 @@ package ru.entel.protocols.modbus.rtu.master;
 import com.ghgande.j2mod.modbus.ModbusCoupler;
 import com.ghgande.j2mod.modbus.net.SerialConnection;
 import com.ghgande.j2mod.modbus.util.SerialParameters;
+import org.apache.log4j.Logger;
+import ru.entel.protocols.modbus.exception.ModbusIllegalRegTypeException;
+import ru.entel.protocols.modbus.exception.ModbusNoResponseException;
+import ru.entel.protocols.modbus.exception.ModbusRequestException;
 import ru.entel.protocols.service.ProtocolMaster;
 import ru.entel.protocols.service.ProtocolMasterParams;
 import ru.entel.protocols.service.ProtocolSlave;
@@ -18,6 +22,8 @@ import java.util.HashSet;
  * @version 0.1
  */
 public class ModbusMaster extends ProtocolMaster {
+    private static final Logger logger = Logger.getLogger(ModbusMaster.class);
+
     /**
      * Объект для коммункации с COM-портом. Передается каждому ModbusSlaveRead при добавлении
      */
@@ -46,6 +52,7 @@ public class ModbusMaster extends ProtocolMaster {
      */
     public ModbusMaster(String name, ModbusMasterParams params) {
         super(name, params);
+        logger.debug("Modbus master initialize.");
     }
 
     @Override
@@ -78,6 +85,7 @@ public class ModbusMaster extends ProtocolMaster {
         mbSlave.setMasterName(this.name);
         mbSlave.setCon(this.con);
         slaves.add(mbSlave);
+        logger.debug("ModbusSlave add: " + slave);
     }
 
     /**
@@ -86,8 +94,10 @@ public class ModbusMaster extends ProtocolMaster {
     public void openPort() {
         try {
             this.con.open();
+            logger.info("ModbusMaster \"" + this.name + "\" open Com-port connection");
         } catch (Exception ex) {
             ex.printStackTrace();
+            logger.error("ModbusMaster \"" + this.name + "\" unable to connect to Com-port");
         }
     }
 
@@ -96,6 +106,7 @@ public class ModbusMaster extends ProtocolMaster {
      */
     public void closePort() {
         this.con.close();
+        logger.info("ModbusMaster \"" + this.name + "\" close Com-port connection");
     }
 
     /**
@@ -112,9 +123,12 @@ public class ModbusMaster extends ProtocolMaster {
                         Thread.sleep(timePause);
                     } catch (InterruptedException ex) {
                         ex.printStackTrace();
-                    } catch (Exception ex) {
-                        //TODO
-                        ex.printStackTrace();
+                    } catch (ModbusRequestException ex) {
+                        logger.error("ModbusSlaveRead \"" + slave + "\" " + ex.getMessage());
+                    } catch (ModbusIllegalRegTypeException ex) {
+                        logger.error("ModbusSlaveRead \"" + slave + "\" " + ex.getMessage());
+                    } catch (ModbusNoResponseException ex) {
+                        logger.error("ModbusSlaveRead \"" + slave + "\" " + ex.getMessage());
                     }
                 }
             }

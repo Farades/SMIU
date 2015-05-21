@@ -15,7 +15,8 @@ import java.util.HashMap;
 
 public class Main {
     public static void main(String[] args) {
-        ModbusMasterParams masterParams = new ModbusMasterParams("COM5", 19200, 8, "none", 1, "rtu", false, 50);
+
+        ModbusMasterParams masterParams = new ModbusMasterParams("COM3", 19200, 8, "none", 1, "rtu", false, 50);
         ProtocolMaster mbMaster = new ModbusMaster("modbus_in", masterParams);
 
         ModbusSlaveParams slave1Params = new ModbusSlaveParams(1, ModbusFunction.READ_COIL_REGS_1, RegType.BIT, 0, 6, 50);

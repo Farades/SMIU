@@ -2,11 +2,11 @@ package ru.entel.protocols.modbus.rtu.master;
 
 import com.adamtaft.eb.EventBusService;
 import com.ghgande.j2mod.modbus.ModbusException;
-import com.ghgande.j2mod.modbus.ModbusIOException;
 import com.ghgande.j2mod.modbus.io.ModbusSerialTransaction;
 import com.ghgande.j2mod.modbus.msg.*;
 import com.ghgande.j2mod.modbus.net.SerialConnection;
 import com.ghgande.j2mod.modbus.procimg.Register;
+import org.apache.log4j.Logger;
 import ru.entel.events.ModbusDataEvent;
 import ru.entel.protocols.modbus.ModbusFunction;
 import ru.entel.protocols.modbus.exception.ModbusIllegalRegTypeException;
@@ -27,6 +27,8 @@ import java.util.Map;
  * @version 0.2
  */
 public class ModbusSlaveRead extends ProtocolSlave {
+    private static final Logger logger = Logger.getLogger(ModbusSlaveRead.class);
+
     /**
      * Объект для коммункации с COM-портом.
      */
@@ -97,8 +99,8 @@ public class ModbusSlaveRead extends ProtocolSlave {
             this.length = mbParams.getLength();
             this.transDelay = mbParams.getTransDelay();
         } else {
-            throw new IllegalArgumentException("Modbus slave params not instance of ModbusSlaveParams by "
-                    + this.masterName + ":" + this.name);
+            String msg = "Modbus slave params not instance of ModbusSlaveParams by " + this.masterName + ":" + this.name;
+            throw new IllegalArgumentException(msg);
         }
     }
 
@@ -118,6 +120,7 @@ public class ModbusSlaveRead extends ProtocolSlave {
     @Override
     public synchronized void request() throws ModbusIllegalRegTypeException, ModbusRequestException, ModbusNoResponseException {
         ModbusRequest req;
+        logger.info("ModbusSlaveRead \"" + this.masterName + ":" + this.name + "\" sending request");
         switch (mbFunc) {
             case READ_COIL_REGS_1: {
                 req = new ReadCoilsRequest(offset, length);
@@ -161,8 +164,6 @@ public class ModbusSlaveRead extends ProtocolSlave {
                         registers.put(offset + i, reg);
                     }
                     EventBusService.publish(new ModbusDataEvent(this.masterName, this.name, this.registers));
-                } catch (ModbusIOException ex) {
-                    throw new ModbusRequestException(ex.getMessage());
                 } catch (ModbusException ex) {
                     throw new ModbusRequestException(ex.getMessage());
                 }
@@ -185,8 +186,6 @@ public class ModbusSlaveRead extends ProtocolSlave {
                         registers.put(offset + i, reg);
                     }
                     EventBusService.publish(new ModbusDataEvent(this.masterName, this.name, this.registers));
-                } catch (ModbusIOException ex) {
-                    throw new ModbusRequestException(ex.getMessage());
                 } catch (ModbusException ex) {
                     throw new ModbusRequestException(ex.getMessage());
                 }
@@ -201,9 +200,8 @@ public class ModbusSlaveRead extends ProtocolSlave {
                                 + " READ_HOLDING_REGS_3 request.");
                     }
                     if(tempResp instanceof ExceptionResponse) {
-                        ExceptionResponse data = (ExceptionResponse)tempResp;
-                        //TODO
-                        System.out.println(data);
+                        //ExceptionResponse data = (ExceptionResponse)tempResp;
+                        throw new ModbusRequestException(this.masterName + ":" + this.name + " ExceptionResponse");
                     } else if(tempResp instanceof ReadMultipleRegistersResponse) {
                         ReadMultipleRegistersResponse resp = (ReadMultipleRegistersResponse)tempResp;
                         Register[] values = resp.getRegisters();
@@ -237,8 +235,6 @@ public class ModbusSlaveRead extends ProtocolSlave {
                                     + this.masterName + ":" +this.name + " READ_HOLDING_REGS_3");
                         }
                     }
-                } catch (ModbusIOException ex) {
-                    throw new ModbusRequestException(ex.getMessage());
                 } catch (ModbusException ex) {
                     throw new ModbusRequestException(ex.getMessage());
                 }
@@ -280,8 +276,6 @@ public class ModbusSlaveRead extends ProtocolSlave {
                         throw new ModbusIllegalRegTypeException("Illegal reg type for "
                                 + this.masterName + ":" +this.name + " READ_INPUT_REGS_4");
                     }
-                } catch (ModbusIOException ex) {
-                    throw new ModbusRequestException(ex.getMessage());
                 } catch (ModbusException ex) {
                     throw new ModbusRequestException(ex.getMessage());
                 }
@@ -292,5 +286,10 @@ public class ModbusSlaveRead extends ProtocolSlave {
 
     public void setCon(SerialConnection con) {
         this.con = con;
+    }
+
+    @Override
+    public String toString() {
+        return this.masterName + ":" + this.name;
     }
 }
