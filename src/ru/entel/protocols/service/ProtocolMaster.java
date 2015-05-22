@@ -7,6 +7,7 @@ package ru.entel.protocols.service;
  * @version 0.1
  */
 public abstract class ProtocolMaster implements Runnable {
+    protected ProtocolType type;
     /**
      * name название конкретного мастера протокола. Например: modbus_in, onewire
      */
