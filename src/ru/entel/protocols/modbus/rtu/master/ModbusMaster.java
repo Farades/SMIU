@@ -10,7 +10,6 @@ import ru.entel.protocols.modbus.exception.ModbusRequestException;
 import ru.entel.protocols.service.ProtocolMaster;
 import ru.entel.protocols.service.ProtocolMasterParams;
 import ru.entel.protocols.service.ProtocolSlave;
-import ru.entel.protocols.service.ProtocolType;
 
 import java.util.HashSet;
 
@@ -53,7 +52,6 @@ public class ModbusMaster extends ProtocolMaster {
      */
     public ModbusMaster(String name, ModbusMasterParams params) {
         super(name, params);
-        this.type = ProtocolType.MODBUS;
         logger.debug(this.name + " initialize.");
     }
 
