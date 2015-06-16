@@ -94,7 +94,7 @@ public class Configurator {
         elnetBindings.put("R5", new Binding("modbus_in", "slave1_1", 4));
         elnetBindings.put("R6", new Binding("modbus_in", "slave1_1", 5));
         try {
-            Device diris = new Device("Diris A", elnetBindings);
+            res = new Device("Diris A", elnetBindings);
         } catch (InitParamBindingsException ex) {
             ex.printStackTrace();
             System.exit(-1);

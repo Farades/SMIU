@@ -23,6 +23,11 @@ public abstract class ProtocolMaster implements Runnable {
         init(params);
     }
 
+    @Override
+    public void run() {
+
+    }
+
     public abstract void addSlave(ProtocolSlave slave);
 
     public abstract void init(ProtocolMasterParams params);

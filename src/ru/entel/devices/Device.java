@@ -11,6 +11,7 @@ import ru.entel.events.ModbusDataEvent;
 import ru.entel.protocols.registers.AbstractRegister;
 import ru.entel.protocols.registers.ZeroRegister;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -22,7 +23,7 @@ import java.util.Set;
  * @version 0.1
  */
 @Listener(references= References.Strong)
-public class Device extends AbstractDevice {
+public class Device extends AbstractDevice implements Serializable {
     private static final Logger logger = Logger.getLogger(AbstractDevice.class);
 
     /**
@@ -114,5 +115,13 @@ public class Device extends AbstractDevice {
     public String toString() {
         return "[" + this.name + "] "
                 + this.values;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public Map<String, AbstractRegister> getValues() {
+        return values;
     }
 }
