@@ -32,6 +32,11 @@ public class Device extends AbstractDevice implements Serializable {
     private String name;
 
     /**
+     * Тип устройства
+     */
+    private DevType type;
+
+    /**
      * Коллекция, хранящая актуальные значения параметров по всем каналам для данного устройства
      */
     private Map<String, AbstractRegister> values = new HashMap<String, AbstractRegister>();
@@ -52,9 +57,10 @@ public class Device extends AbstractDevice implements Serializable {
      *                       а значением является объект класса Binding.
      * @throws InitParamBindingsException Исключение, вызываемое передачей некорректных биндингов.
      */
-    public Device(String name, HashMap<String, Binding> paramsBindings) throws InitParamBindingsException {
+    public Device(String name, DevType type, HashMap<String, Binding> paramsBindings) throws InitParamBindingsException {
         super(paramsBindings);
         this.name = name;
+        this.type = type;
         if ((paramsBindings == null) || (paramsBindings.size() == 0)) {
             throw new InitParamBindingsException("Params bindings incorrect (==null or size == 0)");
         }
@@ -123,5 +129,9 @@ public class Device extends AbstractDevice implements Serializable {
 
     public Map<String, AbstractRegister> getValues() {
         return values;
+    }
+
+    public DevType getType() {
+        return type;
     }
 }

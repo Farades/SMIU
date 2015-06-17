@@ -17,9 +17,11 @@ public class Engine {
         this.protocol_json = protocol_json;
     }
 
+    public void init() {
+        devices = Configurator.deviceFromJson("dwa");
+    }
+
     public void run() {
-        Device dev = Configurator.deviceFromJson("dwa");
-        devices.put(dev.getName(), dev);
         try {
             new Thread(Configurator.protocolMasterFromJson(protocol_json)).start();
         } catch (FileNotFoundException ex) {

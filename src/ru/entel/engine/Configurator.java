@@ -3,6 +3,7 @@ package ru.entel.engine;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import ru.entel.devices.Binding;
+import ru.entel.devices.DevType;
 import ru.entel.devices.Device;
 import ru.entel.devices.exceptions.InitParamBindingsException;
 import ru.entel.protocols.modbus.ModbusFunction;
@@ -81,20 +82,43 @@ public class Configurator {
         return master;
     }
 
-    public static Device deviceFromJson(String fileName) {
-        Device res = null;
-        HashMap<String, Binding> elnetBindings = new HashMap<String, Binding>();
-        elnetBindings.put("Ua", new Binding("modbus_in", "slave1_2", 1));
-        elnetBindings.put("Ub", new Binding("modbus_in", "slave1_2", 2));
-        elnetBindings.put("Uc", new Binding("modbus_in", "slave1_2", 3));
-        elnetBindings.put("R1", new Binding("modbus_in", "slave1_1", 0));
-        elnetBindings.put("R2", new Binding("modbus_in", "slave1_1", 1));
-        elnetBindings.put("R3", new Binding("modbus_in", "slave1_1", 2));
-        elnetBindings.put("R4", new Binding("modbus_in", "slave1_1", 3));
-        elnetBindings.put("R5", new Binding("modbus_in", "slave1_1", 4));
-        elnetBindings.put("R6", new Binding("modbus_in", "slave1_1", 5));
+    public static Map<String, Device> deviceFromJson(String fileName) {
+        Map<String, Device> res = new HashMap<String, Device>();
+
+        HashMap<String, Binding> dirisBindings_1 = new HashMap<String, Binding>();
+        dirisBindings_1.put("Ua", new Binding("modbus_in", "slave1_2", 1));
+        dirisBindings_1.put("Ub", new Binding("modbus_in", "slave1_2", 2));
+        dirisBindings_1.put("Uc", new Binding("modbus_in", "slave1_2", 3));
+        dirisBindings_1.put("Uab", new Binding("modbus_in", "slave1_2", 1));
+        dirisBindings_1.put("Ubc", new Binding("modbus_in", "slave1_2", 2));
+        dirisBindings_1.put("Uca", new Binding("modbus_in", "slave1_2", 3));
+        dirisBindings_1.put("Ia", new Binding("modbus_in", "slave1_2", 1));
+        dirisBindings_1.put("Ib", new Binding("modbus_in", "slave1_2", 2));
+        dirisBindings_1.put("Ic", new Binding("modbus_in", "slave1_2", 3));
+        dirisBindings_1.put("F", new Binding("modbus_in", "slave1_2", 3));
+        dirisBindings_1.put("P", new Binding("modbus_in", "slave1_2", 3));
+
+
+        HashMap<String, Binding> dirisBindings_2 = new HashMap<String, Binding>();
+        dirisBindings_2.put("Ua", new Binding("modbus_in", "slave1_2", 1));
+        dirisBindings_2.put("Ub", new Binding("modbus_in", "slave1_2", 2));
+        dirisBindings_2.put("Uc", new Binding("modbus_in", "slave1_2", 3));
+        dirisBindings_2.put("F", new Binding("modbus_in", "slave1_2", 3));
+
+        HashMap<String, Binding> dirisBindings_3 = new HashMap<String, Binding>();
+        dirisBindings_3.put("Ia", new Binding("modbus_in", "slave1_2", 1));
+        dirisBindings_3.put("Ib", new Binding("modbus_in", "slave1_2", 2));
+        dirisBindings_3.put("Ic", new Binding("modbus_in", "slave1_2", 3));
+
         try {
-            res = new Device("Diris A", elnetBindings);
+            Device d = new Device("Параметры ввода", DevType.MFM, dirisBindings_1);
+            res.put(d.getName(), d);
+
+            d = new Device("Напряжения секции №1", DevType.VOLTMETER, dirisBindings_2);
+            res.put(d.getName(), d);
+
+            d = new Device("Токи секции №2", DevType.AMPERMETER, dirisBindings_3);
+            res.put(d.getName(), d);
         } catch (InitParamBindingsException ex) {
             ex.printStackTrace();
             System.exit(-1);
