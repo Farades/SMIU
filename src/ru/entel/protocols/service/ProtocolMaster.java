@@ -28,6 +28,8 @@ public abstract class ProtocolMaster implements Runnable {
 
     }
 
+    public abstract void stop();
+
     public abstract void addSlave(ProtocolSlave slave);
 
     public abstract void init(ProtocolMasterParams params);

@@ -116,6 +116,7 @@ public class ModbusMaster extends ProtocolMaster {
      */
     @Override
     public void run() {
+        running = true;
         if (slaves.size() != 0) {
             openPort();
             while(running) {
@@ -136,5 +137,10 @@ public class ModbusMaster extends ProtocolMaster {
             }
             closePort();
         }
+    }
+
+    @Override
+    public synchronized void stop() {
+        running = false;
     }
 }
