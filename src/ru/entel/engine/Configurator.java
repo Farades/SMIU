@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder;
 import ru.entel.devices.Binding;
 import ru.entel.devices.DevType;
 import ru.entel.devices.Device;
+import ru.entel.devices.DeviceException;
 import ru.entel.devices.exceptions.InitParamBindingsException;
 import ru.entel.protocols.modbus.ModbusFunction;
 import ru.entel.protocols.modbus.rtu.master.ModbusMaster;
@@ -99,6 +100,14 @@ public class Configurator {
         dirisBindings_1.put("P", new Binding("modbus_in", "slave1_2", 3));
 
 
+        HashMap<String, DeviceException[]> dirisExceptions_1 = new HashMap<String, DeviceException[]>();
+        DeviceException ex1 = new DeviceException("Ua", "Ua>750", "Ua больше допустимой нормы");
+        DeviceException ex2 = new DeviceException("Ua", "Ua<250", "Ua меньше допустимой нормы");
+        DeviceException ex3 = new DeviceException("Ub", "Ub<250", "Ub меньше допустимой нормы");
+        DeviceException ex4 = new DeviceException("Ub", "Ub>750", "Ub больше допустимой нормы");
+        dirisExceptions_1.put("Ua", new DeviceException[]{ex1, ex2});
+        dirisExceptions_1.put("Ub", new DeviceException[]{ex3, ex4});
+
         HashMap<String, Binding> dirisBindings_2 = new HashMap<String, Binding>();
         dirisBindings_2.put("Ua", new Binding("modbus_in", "slave1_2", 1));
         dirisBindings_2.put("Ub", new Binding("modbus_in", "slave1_2", 2));
@@ -111,13 +120,13 @@ public class Configurator {
         dirisBindings_3.put("Ic", new Binding("modbus_in", "slave1_2", 3));
 
         try {
-            Device d = new Device("Параметры ввода", DevType.MFM, dirisBindings_1);
+            Device d = new Device("Параметры ввода", DevType.MFM, dirisBindings_1, dirisExceptions_1);
             res.put(d.getName(), d);
 
-            d = new Device("Напряжения секции №1", DevType.VOLTMETER, dirisBindings_2);
+            d = new Device("Напряжения секции №1", DevType.VOLTMETER, dirisBindings_2, new HashMap<String, DeviceException[]>());
             res.put(d.getName(), d);
 
-            d = new Device("Токи секции №2", DevType.AMPERMETER, dirisBindings_3);
+            d = new Device("Токи секции №2", DevType.AMPERMETER, dirisBindings_3, new HashMap<String, DeviceException[]>());
             res.put(d.getName(), d);
         } catch (InitParamBindingsException ex) {
             ex.printStackTrace();
