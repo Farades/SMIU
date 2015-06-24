@@ -101,10 +101,10 @@ public class Configurator {
 
 
         HashMap<String, DeviceException[]> dirisExceptions_1 = new HashMap<String, DeviceException[]>();
-        DeviceException ex1 = new DeviceException("Ua", "Ua>750", "Ua больше допустимой нормы");
-        DeviceException ex2 = new DeviceException("Ua", "Ua<250", "Ua меньше допустимой нормы");
-        DeviceException ex3 = new DeviceException("Ub", "Ub<250", "Ub меньше допустимой нормы");
-        DeviceException ex4 = new DeviceException("Ub", "Ub>750", "Ub больше допустимой нормы");
+        DeviceException ex1 = new DeviceException("Ua", "Параметры ввода", "Ua>750", "Ua больше допустимой нормы");
+        DeviceException ex2 = new DeviceException("Ua", "Параметры ввода", "Ua<250", "Ua меньше допустимой нормы");
+        DeviceException ex3 = new DeviceException("Ub", "Параметры ввода", "Ub<250", "Ub меньше допустимой нормы");
+        DeviceException ex4 = new DeviceException("Ub", "Параметры ввода", "Ub>750", "Ub больше допустимой нормы");
         dirisExceptions_1.put("Ua", new DeviceException[]{ex1, ex2});
         dirisExceptions_1.put("Ub", new DeviceException[]{ex3, ex4});
 

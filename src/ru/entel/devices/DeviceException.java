@@ -1,23 +1,30 @@
 package ru.entel.devices;
 
+import ru.entel.db.HistoryDeviceException;
 import ru.entel.protocols.registers.AbstractRegister;
 
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * Created by Farades on 23.06.2015.
  */
 public class DeviceException {
     private String varOwnerName;
+    private String deviceOwner;
     private String condition;
     private String description;
+    private String time_start;
+    private String time_end;
     private AbstractRegister currentValue;
     private boolean active;
 
-    public DeviceException(String varOwnerName, String condition, String description) {
+    public DeviceException(String varOwnerName, String deviceOwner, String condition, String description) {
         this.varOwnerName = varOwnerName;
+        this.deviceOwner = deviceOwner;
         this.condition = condition;
         this.description = description;
         active = false;
@@ -56,12 +63,34 @@ public class DeviceException {
         return currentValue;
     }
 
+    public String getDeviceOwner() {
+        return deviceOwner;
+    }
+
+    public String getTime_start() {
+        return time_start;
+    }
+
+    public String getTime_end() {
+        return time_end;
+    }
+
     public void activate() {
-        this.active = true;
+        if (!this.active) {
+            this.active = true;
+            SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+            this.time_start = dateFormat.format(new Date());
+        }
     }
 
     public void desactivate() {
-        this.active = false;
+        if (this.active) {
+            this.active = false;
+            SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+            this.time_end = dateFormat.format(new Date());
+            HistoryDeviceException.saveDeviceException(this);
+        }
+
     }
 
     @Override
