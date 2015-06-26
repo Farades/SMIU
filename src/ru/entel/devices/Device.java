@@ -12,10 +12,7 @@ import ru.entel.protocols.registers.AbstractRegister;
 import ru.entel.protocols.registers.ZeroRegister;
 
 import java.io.Serializable;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  *
@@ -29,7 +26,7 @@ public class Device extends AbstractDevice implements Serializable {
     /**
      * Словарь, содержащий исключительные ситуации
      */
-    Map<String, DeviceException[]> exceptions = new HashMap<String, DeviceException[]>();
+    HashMap<String, ArrayList<DeviceException>> exceptions = new HashMap<String, ArrayList<DeviceException>>();
 
     /**
      * Сет, содержащий активные исключения для данного устройства
@@ -72,7 +69,7 @@ public class Device extends AbstractDevice implements Serializable {
      *                       а значением является объект класса Binding.
      * @throws InitParamBindingsException Исключение, вызываемое передачей некорректных биндингов.
      */
-    public Device(String name, String description, DevType type, HashMap<String, Binding> paramsBindings, HashMap<String, DeviceException[]> exceptions) throws InitParamBindingsException {
+    public Device(String name, String description, DevType type, HashMap<String, Binding> paramsBindings, HashMap<String, ArrayList<DeviceException>> exceptions) throws InitParamBindingsException {
         super(paramsBindings);
         this.name = name;
         this.description = description;
@@ -155,6 +152,10 @@ public class Device extends AbstractDevice implements Serializable {
 
     public String getName() {
         return name;
+    }
+
+    public String getDescription() {
+        return description;
     }
 
     public Map<String, AbstractRegister> getValues() {

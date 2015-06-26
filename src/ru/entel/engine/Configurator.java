@@ -112,6 +112,7 @@ public class Configurator {
             String devName = String.valueOf(deviceParam.get("name"));
             String devDescr = String.valueOf(deviceParam.get("description"));
             DevType devtype = DevType.valueOf(String.valueOf(deviceParam.get("devType")));
+            //Десереализация params binding'ов
             ArrayList jsonBindings = (ArrayList)deviceParam.get("bindings");
             HashMap<String, Binding> bindings = new HashMap<String, Binding>();
             for (Object binding : jsonBindings) {
@@ -123,8 +124,25 @@ public class Configurator {
                 Binding newBinding = new Binding(protocolMasterName, channelName, regNumb);
                 bindings.put(varName, newBinding);
             }
+            //Десереализация device exception'ов
+            ArrayList jsonExceptions = (ArrayList)deviceParam.get("exceptions");
+            HashMap<String, ArrayList<DeviceException>> exceptions = new HashMap<String, ArrayList<DeviceException>>();
+            for (Object exception : jsonExceptions) {
+                Map jsonException = (Map)exception;
+                String varOwnerName = String.valueOf(jsonException.get("varOwnerName"));
+                String condition = String.valueOf(jsonException.get("condition"));
+                String description = String.valueOf(jsonException.get("description"));
+                DeviceException deviceException = new DeviceException(varOwnerName, devDescr, condition, description);
+                if (exceptions.containsKey(varOwnerName)) {
+                    exceptions.get(varOwnerName).add(deviceException);
+                } else {
+                    ArrayList<DeviceException> deviceExceptionArrayList = new ArrayList<DeviceException>();
+                    deviceExceptionArrayList.add(deviceException);
+                    exceptions.put(varOwnerName, deviceExceptionArrayList);
+                }
+            }
             try {
-                Device newDevice = new Device(devName, devDescr, devtype, bindings, new HashMap<String, DeviceException[]>());
+                Device newDevice = new Device(devName, devDescr, devtype, bindings, exceptions);
                 res.put(devName, newDevice);
             } catch (InitParamBindingsException e) {
                 e.printStackTrace();

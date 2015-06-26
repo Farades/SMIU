@@ -23,6 +23,28 @@
 					"channelName": "slave1_2",
 					"regNumb": 3
 				}
+			],
+			"exceptions": [
+				{
+					"varOwnerName": "Ia",
+					"condition": "Ia>750",
+					"description": "Ia больше допустимой нормы"
+				},
+				{
+					"varOwnerName": "Ia",
+					"condition": "Ia<250",
+					"description": "Ia меньше допустимой нормы"
+				},
+				{
+					"varOwnerName": "Ib",
+					"condition": "Ib>750",
+					"description": "Ib больше допустимой нормы"
+				},
+				{
+					"varOwnerName": "Ib",
+					"condition": "Ib<250",
+					"description": "Ib меньше допустимой нормы"
+				}
 			]
 		},
 		{
@@ -53,6 +75,28 @@
 					"protocolMasterName": "modbus_in",
 					"channelName": "slave1_2",
 					"regNumb": 3
+				}
+			],
+			"exceptions": [
+				{
+					"varOwnerName": "Ua",
+					"condition": "Ua>750",
+					"description": "Ua больше допустимой нормы"
+				},
+				{
+					"varOwnerName": "Ua",
+					"condition": "Ua<250",
+					"description": "Ua меньше допустимой нормы"
+				},
+				{
+					"varOwnerName": "Ub",
+					"condition": "Ub>750",
+					"description": "Ub больше допустимой нормы"
+				},
+				{
+					"varOwnerName": "Ub",
+					"condition": "Ub<250",
+					"description": "Ub меньше допустимой нормы"
 				}
 			]
 		}
