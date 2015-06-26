@@ -25,7 +25,7 @@ import java.util.Map;
  */
 public class Configurator {
 
-    public static ProtocolMaster protocolMasterFromJson(String fileName) throws FileNotFoundException {
+    public synchronized static ProtocolMaster protocolMasterFromJson(String fileName) throws FileNotFoundException {
         exists(fileName);
         StringBuffer sb = new StringBuffer();
 
@@ -83,54 +83,53 @@ public class Configurator {
         return master;
     }
 
-    public static Map<String, Device> deviceFromJson(String fileName) {
-        Map<String, Device> res = new HashMap<String, Device>();
+    public synchronized static Map<String, Device> deviceFromJson(String fileName) throws FileNotFoundException {
+        exists(fileName);
 
-        HashMap<String, Binding> dirisBindings_1 = new HashMap<String, Binding>();
-        dirisBindings_1.put("Ua", new Binding("modbus_in", "slave1_2", 1));
-        dirisBindings_1.put("Ub", new Binding("modbus_in", "slave1_2", 2));
-        dirisBindings_1.put("Uc", new Binding("modbus_in", "slave1_2", 3));
-        dirisBindings_1.put("Uab", new Binding("modbus_in", "slave1_2", 1));
-        dirisBindings_1.put("Ubc", new Binding("modbus_in", "slave1_2", 2));
-        dirisBindings_1.put("Uca", new Binding("modbus_in", "slave1_2", 3));
-        dirisBindings_1.put("Ia", new Binding("modbus_in", "slave1_2", 1));
-        dirisBindings_1.put("Ib", new Binding("modbus_in", "slave1_2", 2));
-        dirisBindings_1.put("Ic", new Binding("modbus_in", "slave1_2", 3));
-        dirisBindings_1.put("F", new Binding("modbus_in", "slave1_2", 3));
-        dirisBindings_1.put("P", new Binding("modbus_in", "slave1_2", 3));
-
-
-        HashMap<String, DeviceException[]> dirisExceptions_1 = new HashMap<String, DeviceException[]>();
-        DeviceException ex1 = new DeviceException("Ua", "Параметры ввода", "Ua>750", "Ua больше допустимой нормы");
-        DeviceException ex2 = new DeviceException("Ua", "Параметры ввода", "Ua<250", "Ua меньше допустимой нормы");
-        DeviceException ex3 = new DeviceException("Ub", "Параметры ввода", "Ub<250", "Ub меньше допустимой нормы");
-        DeviceException ex4 = new DeviceException("Ub", "Параметры ввода", "Ub>750", "Ub больше допустимой нормы");
-        dirisExceptions_1.put("Ua", new DeviceException[]{ex1, ex2});
-        dirisExceptions_1.put("Ub", new DeviceException[]{ex3, ex4});
-
-        HashMap<String, Binding> dirisBindings_2 = new HashMap<String, Binding>();
-        dirisBindings_2.put("Ua", new Binding("modbus_in", "slave1_2", 1));
-        dirisBindings_2.put("Ub", new Binding("modbus_in", "slave1_2", 2));
-        dirisBindings_2.put("Uc", new Binding("modbus_in", "slave1_2", 3));
-        dirisBindings_2.put("F", new Binding("modbus_in", "slave1_2", 3));
-
-        HashMap<String, Binding> dirisBindings_3 = new HashMap<String, Binding>();
-        dirisBindings_3.put("Ia", new Binding("modbus_in", "slave1_2", 1));
-        dirisBindings_3.put("Ib", new Binding("modbus_in", "slave1_2", 2));
-        dirisBindings_3.put("Ic", new Binding("modbus_in", "slave1_2", 3));
+        StringBuffer sb = new StringBuffer();
 
         try {
-            Device d = new Device("Параметры ввода", DevType.MFM, dirisBindings_1, dirisExceptions_1);
-            res.put(d.getName(), d);
+            BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(fileName) , "UTF-8"));
+            try {
+                String s;
+                while((s = br.readLine()) != null) {
+                    sb.append(s);
+                    sb.append("\n");
+                }
+            } finally {
+                br.close();
+            }
+        } catch (IOException ex) {
+            throw new RuntimeException(ex);
+        }
+        Gson gson = new GsonBuilder().registerTypeAdapter(Object.class, new NaturalDeserializer()).create();
+        Map jsonParams = (Map) gson.fromJson(sb.toString(), Object.class);
 
-            d = new Device("Напряжения секции №1", DevType.VOLTMETER, dirisBindings_2, new HashMap<String, DeviceException[]>());
-            res.put(d.getName(), d);
-
-            d = new Device("Токи секции №2", DevType.AMPERMETER, dirisBindings_3, new HashMap<String, DeviceException[]>());
-            res.put(d.getName(), d);
-        } catch (InitParamBindingsException ex) {
-            ex.printStackTrace();
-            System.exit(-1);
+        Map<String, Device> res = new HashMap<String, Device>();
+        ArrayList jsonDevices = (ArrayList)jsonParams.get("devices");
+        for (Object device : jsonDevices) {
+            Map deviceParam = (Map)device;
+            String devName = String.valueOf(deviceParam.get("name"));
+            String devDescr = String.valueOf(deviceParam.get("description"));
+            DevType devtype = DevType.valueOf(String.valueOf(deviceParam.get("devType")));
+            ArrayList jsonBindings = (ArrayList)deviceParam.get("bindings");
+            HashMap<String, Binding> bindings = new HashMap<String, Binding>();
+            for (Object binding : jsonBindings) {
+                Map jsonBinding = (Map)binding;
+                String varName = String.valueOf(jsonBinding.get("varName"));
+                String protocolMasterName = String.valueOf(jsonBinding.get("protocolMasterName"));
+                String channelName = String.valueOf(jsonBinding.get("channelName"));
+                int regNumb = ((Double)jsonBinding.get("regNumb")).intValue();
+                Binding newBinding = new Binding(protocolMasterName, channelName, regNumb);
+                bindings.put(varName, newBinding);
+            }
+            try {
+                Device newDevice = new Device(devName, devDescr, devtype, bindings, new HashMap<String, DeviceException[]>());
+                res.put(devName, newDevice);
+            } catch (InitParamBindingsException e) {
+                e.printStackTrace();
+                System.exit(1);
+            }
         }
         return res;
     }

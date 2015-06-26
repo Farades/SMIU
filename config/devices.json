@@ -1,0 +1,61 @@
+{
+	"devices": [
+		{
+			"name": "Diris_1",
+			"description": "Параметры ввода",
+			"devType" : "AMPERMETER",
+			"bindings": [
+				{
+					"varName": "Ia",
+					"protocolMasterName": "modbus_in",
+					"channelName": "slave1_2",
+					"regNumb": 1
+				},
+				{
+					"varName": "Ib",
+					"protocolMasterName": "modbus_in",
+					"channelName": "slave1_2",
+					"regNumb": 2
+				},
+				{
+					"varName": "Ic",
+					"protocolMasterName": "modbus_in",
+					"channelName": "slave1_2",
+					"regNumb": 3
+				}
+			]
+		},
+		{
+			"name": "Diris_2",
+			"description": "Напряжения на секции №1",
+			"devType" : "VOLTMETER",
+			"bindings": [
+				{
+					"varName": "Ua",
+					"protocolMasterName": "modbus_in",
+					"channelName": "slave1_2",
+					"regNumb": 1
+				},
+				{
+					"varName": "Ub",
+					"protocolMasterName": "modbus_in",
+					"channelName": "slave1_2",
+					"regNumb": 2
+				},
+				{
+					"varName": "Uc",
+					"protocolMasterName": "modbus_in",
+					"channelName": "slave1_2",
+					"regNumb": 3
+				},
+				{
+					"varName": "F",
+					"protocolMasterName": "modbus_in",
+					"channelName": "slave1_2",
+					"regNumb": 3
+				}
+			]
+		}
+
+	]
+}

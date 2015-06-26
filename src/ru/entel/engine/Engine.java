@@ -13,15 +13,17 @@ import java.util.Map;
 public class Engine {
     private Map<String, Device> devices = new HashMap();
     private String protocol_json;
+    private String devices_json;
     private ProtocolMaster protocolMaster;
 
-    public Engine(String protocol_json) {
+    public Engine(String protocol_json, String devices_json) {
         this.protocol_json = protocol_json;
+        this.devices_json = devices_json;
     }
 
     public void init() {
-        devices = Configurator.deviceFromJson("dwa");
         try {
+            devices = Configurator.deviceFromJson(devices_json);
             protocolMaster = Configurator.protocolMasterFromJson(protocol_json);
         } catch (FileNotFoundException e) {
             e.printStackTrace();

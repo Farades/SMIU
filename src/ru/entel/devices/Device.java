@@ -42,6 +42,11 @@ public class Device extends AbstractDevice implements Serializable {
     private String name;
 
     /**
+     * Описание устройства
+     */
+    private String description;
+
+    /**
      * Тип устройства
      */
     private DevType type;
@@ -67,9 +72,10 @@ public class Device extends AbstractDevice implements Serializable {
      *                       а значением является объект класса Binding.
      * @throws InitParamBindingsException Исключение, вызываемое передачей некорректных биндингов.
      */
-    public Device(String name, DevType type, HashMap<String, Binding> paramsBindings, HashMap<String, DeviceException[]> exceptions) throws InitParamBindingsException {
+    public Device(String name, String description, DevType type, HashMap<String, Binding> paramsBindings, HashMap<String, DeviceException[]> exceptions) throws InitParamBindingsException {
         super(paramsBindings);
         this.name = name;
+        this.description = description;
         this.type = type;
         this.exceptions = exceptions;
         if ((paramsBindings == null) || (paramsBindings.size() == 0)) {

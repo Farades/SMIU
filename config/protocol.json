@@ -9,7 +9,7 @@
     "echo": false
   },
 
-  "timePause": 1000,
+  "timePause": 100,
   "type": "MODBUS",
   "name": "modbus_in",
 
