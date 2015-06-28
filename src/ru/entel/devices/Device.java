@@ -19,7 +19,7 @@ import java.util.*;
  * @author Мацепура Артем
  * @version 0.1
  */
-@Listener(references= References.Strong)
+//@Listener(references= References.Strong)
 public class Device extends AbstractDevice implements Serializable {
     private static final Logger logger = Logger.getLogger(AbstractDevice.class);
 
@@ -96,6 +96,10 @@ public class Device extends AbstractDevice implements Serializable {
             channelsId.add(binding.getChannelID());
         }
         EventBusService.getModbusBus().subscribe(this);
+    }
+
+    public void finalize() {
+        EventBusService.getModbusBus().unsubscribe(this);
     }
 
     /**

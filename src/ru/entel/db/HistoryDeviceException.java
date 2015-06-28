@@ -14,8 +14,7 @@ public class HistoryDeviceException {
     public static void saveDeviceException(DeviceException deviceException) {
         Connection dbConn = Database.getInstance().getConn();
         try {
-            PreparedStatement stmt = dbConn.prepareStatement("INSERT INTO exception ('device', 'description', 'time_start', 'time_end')" +
-                    "values (?, ?, ?, ?)");
+            PreparedStatement stmt = dbConn.prepareStatement("INSERT INTO DEV_EXCEPTION (device, description, time_start, time_end)  values (?, ?, ?, ?)");
             stmt.setString(1, deviceException.getDeviceOwner());
             stmt.setString(2, deviceException.getDescription());
             stmt.setString(3, deviceException.getTime_start());
@@ -24,7 +23,7 @@ public class HistoryDeviceException {
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
-            Database.closeConnection();
+            Database.getInstance().closeConnection();
         }
     }
 
@@ -33,7 +32,7 @@ public class HistoryDeviceException {
         ArrayList<DeviceExceptionFromDb> res = new ArrayList<DeviceExceptionFromDb>();
         try {
             Statement stmt = dbConn.createStatement();
-            ResultSet rst = stmt.executeQuery("SELECT * FROM `exception` ORDER BY `id` DESC");
+            ResultSet rst = stmt.executeQuery("SELECT * FROM DEV_EXCEPTION ORDER BY time_end DESC");
             while (rst.next()) {
                 String device = rst.getString("device");
                 String description = rst.getString("description");
@@ -44,7 +43,7 @@ public class HistoryDeviceException {
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
-            Database.closeConnection();
+            Database.getInstance().closeConnection();
         }
         return res;
     }

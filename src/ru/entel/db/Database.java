@@ -9,7 +9,7 @@ import java.sql.SQLException;
  * Created by Farades on 24.06.2015.
  */
 public class Database {
-    private static Connection conn;
+    private Connection conn;
     private static Database instance;
     private static DataSource ds;
 
@@ -24,7 +24,9 @@ public class Database {
     }
 
     public static void setDataSource(DataSource ds) {
-        Database.ds = ds;
+        if (Database.ds == null) {
+            Database.ds = ds;
+        }
     }
 
     public Connection getConn() {
@@ -38,12 +40,14 @@ public class Database {
         return conn;
     }
 
-    public static void closeConnection(){
-        try {
-            conn.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
+    public void closeConnection(){
+        if (conn != null) {
+            try {
+                conn.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+            conn = null;
         }
-        conn = null;
     }
 }

@@ -2,6 +2,7 @@ package ru.entel.engine;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import ru.entel.db.Database;
 import ru.entel.devices.Binding;
 import ru.entel.devices.DevType;
 import ru.entel.devices.Device;
@@ -16,6 +17,10 @@ import ru.entel.protocols.registers.RegType;
 import ru.entel.protocols.service.ProtocolMaster;
 
 import java.io.*;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -25,27 +30,21 @@ import java.util.Map;
  */
 public class Configurator {
 
-    public synchronized static ProtocolMaster protocolMasterFromJson(String fileName) throws FileNotFoundException {
-        exists(fileName);
-        StringBuffer sb = new StringBuffer();
-
+    public synchronized static ProtocolMaster protocolMasterFromJson() throws FileNotFoundException {
+        Connection dbConn = Database.getInstance().getConn();
+        String jsonStr = "";
         try {
-            BufferedReader br = new BufferedReader(new FileReader(fileName));
-            try {
-                String s;
-                while((s = br.readLine()) != null) {
-                    sb.append(s);
-                    sb.append("\n");
-                }
-            } finally {
-                br.close();
+            Statement stmt = dbConn.createStatement();
+            ResultSet rsts = stmt.executeQuery("SELECT * FROM JSON_CONFIG WHERE NAME='protocol'");
+            while (rsts.next()) {
+                jsonStr = rsts.getString("data");
             }
-        } catch (IOException ex) {
-            throw new RuntimeException(ex);
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
 
         Gson gson = new GsonBuilder().registerTypeAdapter(Object.class, new NaturalDeserializer()).create();
-        Map jsonParams = (Map) gson.fromJson(sb.toString(), Object.class);
+        Map jsonParams = (Map) gson.fromJson(jsonStr.toString(), Object.class);
 
         String protocolType = (String)jsonParams.get("type");
 
@@ -83,27 +82,21 @@ public class Configurator {
         return master;
     }
 
-    public synchronized static Map<String, Device> deviceFromJson(String fileName) throws FileNotFoundException {
-        exists(fileName);
-
-        StringBuffer sb = new StringBuffer();
-
+    public synchronized static Map<String, Device> deviceFromJson() {
+        Connection dbConn = Database.getInstance().getConn();
+        String jsonStr = "";
         try {
-            BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(fileName) , "UTF-8"));
-            try {
-                String s;
-                while((s = br.readLine()) != null) {
-                    sb.append(s);
-                    sb.append("\n");
-                }
-            } finally {
-                br.close();
+            Statement stmt = dbConn.createStatement();
+            ResultSet rsts = stmt.executeQuery("SELECT * FROM JSON_CONFIG WHERE NAME='devices'");
+            while (rsts.next()) {
+                jsonStr = rsts.getString("data");
             }
-        } catch (IOException ex) {
-            throw new RuntimeException(ex);
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
+
         Gson gson = new GsonBuilder().registerTypeAdapter(Object.class, new NaturalDeserializer()).create();
-        Map jsonParams = (Map) gson.fromJson(sb.toString(), Object.class);
+        Map jsonParams = (Map) gson.fromJson(jsonStr.toString(), Object.class);
 
         Map<String, Device> res = new HashMap<String, Device>();
         ArrayList jsonDevices = (ArrayList)jsonParams.get("devices");

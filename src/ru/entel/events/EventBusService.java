@@ -11,4 +11,9 @@ public class EventBusService {
     public static MBassador<ModbusDataEvent> getModbusBus() {
         return modbusBus;
     }
+
+    public static void reInit() {
+        modbusBus.shutdown();
+        modbusBus = new MBassador<ModbusDataEvent>();
+    }
 }

@@ -2,10 +2,12 @@ package ru.entel.engine;
 
 import ru.entel.db.Database;
 import ru.entel.devices.Device;
+import ru.entel.events.EventBusService;
 import ru.entel.protocols.service.ProtocolMaster;
 
 import javax.sql.DataSource;
 import java.io.FileNotFoundException;
+import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -14,22 +16,32 @@ import java.util.Map;
  */
 public class Engine {
     private Map<String, Device> devices = new HashMap();
-    private String protocol_json;
-    private String devices_json;
     private ProtocolMaster protocolMaster;
     private DataSource ds;
 
-    public Engine(String protocol_json, String devices_json, DataSource ds) {
+    public Engine(DataSource ds) {
         this.ds = ds;
         Database.setDataSource(ds);
-        this.protocol_json = protocol_json;
-        this.devices_json = devices_json;
     }
 
     public void init() {
+        //Удаление устройств при переинициализации
+        if (devices != null) {
+            for (Device device : devices.values()) {
+                device.finalize();
+                device = null;
+            }
+            EventBusService.reInit();
+            Object obj = new Object();
+            WeakReference ref = new WeakReference<Object>(obj);
+            obj = null;
+            while(ref.get() != null) {
+                System.gc();
+            }
+        }
         try {
-            devices = Configurator.deviceFromJson(devices_json);
-            protocolMaster = Configurator.protocolMasterFromJson(protocol_json);
+            devices = Configurator.deviceFromJson();
+            protocolMaster = Configurator.protocolMasterFromJson();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
