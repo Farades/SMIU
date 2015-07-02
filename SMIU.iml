@@ -14,5 +14,6 @@
     <orderEntry type="library" exported="" name="mbassador-1.2.1" level="project" />
     <orderEntry type="library" exported="" name="gson-2.3.1" level="project" />
     <orderEntry type="library" exported="" name="sqlite-jdbc-3.8.10.1" level="project" />
+    <orderEntry type="library" exported="" name="mysql-connector-java-5.0.8-bin" level="project" />
   </component>
 </module>
