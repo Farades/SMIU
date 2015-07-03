@@ -5,7 +5,6 @@
 //
 //import javax.naming.NamingException;
 //import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
-//import java.util.Map;
 //
 //public class Main {
 //    public static void main(String[] args) throws NamingException {
@@ -17,9 +16,8 @@
 //        engine.init();
 //        engine.run();
 //        while(true) {
-//            for (Map.Entry<String, Device> entry : engine.getDevices().entrySet()) {
-//                System.out.println(entry.getValue().getValues());
-////                System.out.println(entry.getKey());
+//            for (Device deivce : engine.getDevices().values()) {
+//                System.out.println(deivce.getValues());
 //            }
 //            try {
 //                Thread.sleep(1000);

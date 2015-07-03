@@ -19,7 +19,7 @@ import java.util.*;
  * @author Мацепура Артем
  * @version 0.1
  */
-//@Listener(references= References.Strong)
+@Listener(references= References.Strong)
 public class Device extends AbstractDevice implements Serializable {
     private static final Logger logger = Logger.getLogger(AbstractDevice.class);
 
@@ -132,15 +132,15 @@ public class Device extends AbstractDevice implements Serializable {
                     //Обработка исключительных ситуаций
                     //Если для обновленной переменной объекта Device существуют исключительные ситуации, то проверяем
                     //Не произошла ли какая-либо исключительная ситуация
-//                    if (this.exceptions.containsKey(cbEntrySet.getKey())) {
-//                        for (DeviceException deviceException : exceptions.get(cbEntrySet.getKey())) {
-//                            if (deviceException.check(value)) {
-//                                this.activeExceptions.add(deviceException);
-//                            } else {
-//                                this.activeExceptions.remove(deviceException);
-//                            }
-//                        }
-//                    }
+                    if (this.exceptions.containsKey(cbEntrySet.getKey())) {
+                        for (DeviceException deviceException : exceptions.get(cbEntrySet.getKey())) {
+                            if (deviceException.check(value)) {
+                                this.activeExceptions.add(deviceException);
+                            } else {
+                                this.activeExceptions.remove(deviceException);
+                            }
+                        }
+                    }
                 } else {
                     throw new IncorrectDeviceBindingException("No register for binding: " + cbEntrySet.getValue());
                 }
@@ -150,8 +150,7 @@ public class Device extends AbstractDevice implements Serializable {
     }
     @Override
     public String toString() {
-        return "[" + this.name + "] "
-                + this.values;
+        return this.values.toString();
     }
 
     public String getName() {

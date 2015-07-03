@@ -2,6 +2,7 @@ package ru.entel.engine;
 
 import ru.entel.db.Database;
 import ru.entel.devices.Device;
+import ru.entel.devices.LogSaver;
 import ru.entel.events.EventBusService;
 import ru.entel.protocols.service.ProtocolMaster;
 
@@ -18,6 +19,7 @@ public class Engine {
     private Map<String, Device> devices = new HashMap();
     private ProtocolMaster protocolMaster;
     private DataSource ds;
+    private LogSaver logSaver;
 
     public Engine(DataSource ds) {
         this.ds = ds;
@@ -45,14 +47,17 @@ public class Engine {
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
+        logSaver = new LogSaver(this, 10);
     }
 
     public void run() {
         new Thread(protocolMaster).start();
+        new Thread(logSaver).start();
     }
 
     public void stop() {
         protocolMaster.stop();
+        logSaver.stop();
     }
 
     public Map<String, Device> getDevices() {

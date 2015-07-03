@@ -11,14 +11,28 @@ import java.util.Date;
  */
 public class HistoryDeviceException {
 
-    public static void saveDeviceException(DeviceException deviceException) {
+    public static void saveStartDeviceException(DeviceException deviceException) {
         Connection dbConn = Database.getInstance().getConn();
         try {
-            PreparedStatement stmt = dbConn.prepareStatement("INSERT INTO DEV_EXCEPTION (device, description, time_start, time_end)  values (?, ?, ?, ?)");
-            stmt.setString(1, deviceException.getDeviceOwner());
-            stmt.setString(2, deviceException.getDescription());
-            stmt.setString(3, deviceException.getTime_start());
-            stmt.setString(4, deviceException.getTime_end());
+            PreparedStatement stmt = dbConn.prepareStatement("INSERT INTO ALARM_LOG (data, time, state)  values (?, ?, ?)");
+            stmt.setString(1, deviceException.getDescription());
+            stmt.setString(2, deviceException.getTime_start());
+            stmt.setString(3, "start");
+            stmt.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            Database.getInstance().closeConnection();
+        }
+    }
+
+    public static void saveEndDeviceException(DeviceException deviceException) {
+        Connection dbConn = Database.getInstance().getConn();
+        try {
+            PreparedStatement stmt = dbConn.prepareStatement("INSERT INTO ALARM_LOG (data, time, state)  values (?, ?, ?)");
+            stmt.setString(1, deviceException.getDescription());
+            stmt.setString(2, deviceException.getTime_end());
+            stmt.setString(3, "end");
             stmt.execute();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -32,13 +46,12 @@ public class HistoryDeviceException {
         ArrayList<DeviceExceptionFromDb> res = new ArrayList<DeviceExceptionFromDb>();
         try {
             Statement stmt = dbConn.createStatement();
-            ResultSet rst = stmt.executeQuery("SELECT * FROM DEV_EXCEPTION ORDER BY time_end DESC");
+            ResultSet rst = stmt.executeQuery("SELECT * FROM ALARM_LOG ORDER BY id DESC");
             while (rst.next()) {
-                String device = rst.getString("device");
-                String description = rst.getString("description");
-                String time_start = rst.getString("time_start");
-                String time_end = rst.getString("time_end");
-                res.add(new DeviceExceptionFromDb(device, description, time_start, time_end));
+                String description = rst.getString("data");
+                String time = rst.getString("time");
+                String state = rst.getString("state");
+                res.add(new DeviceExceptionFromDb(description, time, state));
             }
         } catch (SQLException e) {
             e.printStackTrace();

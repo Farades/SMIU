@@ -52,7 +52,7 @@ public class DeviceException {
     }
 
     public String getDescription() {
-        return description;
+        return this.deviceOwner + ": " + this.description;
     }
 
     public String getVarOwnerName() {
@@ -80,6 +80,7 @@ public class DeviceException {
             this.active = true;
             SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
             this.time_start = dateFormat.format(new Date());
+            HistoryDeviceException.saveStartDeviceException(this);
         }
     }
 
@@ -88,7 +89,7 @@ public class DeviceException {
             this.active = false;
             SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
             this.time_end = dateFormat.format(new Date());
-            HistoryDeviceException.saveDeviceException(this);
+            HistoryDeviceException.saveEndDeviceException(this);
         }
 
     }
