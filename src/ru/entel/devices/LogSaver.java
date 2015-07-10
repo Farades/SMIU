@@ -6,6 +6,7 @@ import ru.entel.engine.Engine;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -31,23 +32,24 @@ public class LogSaver implements Runnable {
     public void run() {
         running = true;
         while(running) {
-            saveLogs();
             try {
                 Thread.sleep(this.timePause * 1000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
+            saveLogs();
         }
     }
 
-    private void saveLogs() {
+    private synchronized void saveLogs() {
+        Connection dbConn = Database.getInstance().getConn();
         try {
-            SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
-            String current_time = dateFormat.format(new Date());
-            Connection dbConn = Database.getInstance().getConn();
+            Date date = new Date();
+            Timestamp timestamp = new Timestamp(date.getTime());
+
             for (Device device : engine.getDevices().values()) {
                 PreparedStatement stmt = dbConn.prepareStatement("INSERT INTO DATA_LOG (time, data, device)  values (?, ?, ?)");
-                stmt.setString(1, current_time);
+                stmt.setTimestamp(1, timestamp);
                 stmt.setString(2, device.toString());
                 stmt.setString(3, device.getDescription());
                 stmt.execute();
@@ -55,7 +57,11 @@ public class LogSaver implements Runnable {
         } catch (SQLException ex) {
             ex.printStackTrace();
         } finally {
-            Database.getInstance().closeConnection();
+            try {
+                dbConn.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
     }
 

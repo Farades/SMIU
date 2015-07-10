@@ -1,20 +1,22 @@
 package ru.entel.db;
 
+import java.sql.Timestamp;
+
 /**
  * Created by Farades on 03.07.2015.
  */
 public class LogRow {
-    private String time;
+    private Timestamp time;
     private String data;
     private String device;
 
-    public LogRow(String time, String data, String device) {
+    public LogRow(Timestamp time, String data, String device) {
         this.time = time;
         this.data = data;
         this.device = device;
     }
 
-    public String getTime() {
+    public Timestamp getTime() {
         return time;
     }
 

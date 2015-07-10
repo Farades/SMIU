@@ -22,7 +22,11 @@ public class HistoryDeviceException {
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
-            Database.getInstance().closeConnection();
+            try {
+                dbConn.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -37,7 +41,11 @@ public class HistoryDeviceException {
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
-            Database.getInstance().closeConnection();
+            try {
+                dbConn.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -56,7 +64,11 @@ public class HistoryDeviceException {
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
-            Database.getInstance().closeConnection();
+            try {
+                dbConn.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
         return res;
     }

@@ -1,23 +1,27 @@
 package ru.entel.db;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
+import java.sql.*;
+import java.sql.Date;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 /**
  * Created by Farades on 03.07.2015.
  */
 public class LogSaverDB {
-    public static ArrayList<LogRow> getDataLogs() {
+    public synchronized static ArrayList<LogRow> getDataLogsByDate(Date date) {
         ArrayList<LogRow> result = new ArrayList<LogRow>();
         Connection dbConn = Database.getInstance().getConn();
         try {
-            Statement stmt = dbConn.createStatement();
-            ResultSet rst = stmt.executeQuery("SELECT * FROM DATA_LOG ORDER BY id DESC");
+            SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd");
+            String dateStr = sf.format(date);
+
+            PreparedStatement stmt = dbConn.prepareStatement("SELECT * FROM DATA_LOG WHERE DATE_FORMAT(time, '%Y %m %d') = DATE_FORMAT(?, '%Y %m %d') ORDER BY id DESC");
+            stmt.setString(1, dateStr);
+            ResultSet rst = stmt.executeQuery();
+
             while (rst.next()) {
-                String time = rst.getString("time");
+                Timestamp time = rst.getTimestamp("time");
                 String data = rst.getString("data");
                 String device = rst.getString("device");
                 result.add(new LogRow(time, data, device));
@@ -25,8 +29,44 @@ public class LogSaverDB {
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
-            Database.getInstance().closeConnection();
+            try {
+                dbConn.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
+        System.out.println(result.size());
+        return result;
+    }
+
+    public synchronized static ArrayList<LogRow> getDataLogsByCurrentDate() {
+        ArrayList<LogRow> result = new ArrayList<LogRow>();
+        Connection dbConn = Database.getInstance().getConn();
+        try {
+            java.util.Date date = new java.util.Date();
+            SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd");
+            String dateStr = sf.format(date);
+
+            PreparedStatement stmt = dbConn.prepareStatement("SELECT * FROM DATA_LOG WHERE DATE_FORMAT(time, '%Y %m %d') = DATE_FORMAT(?, '%Y %m %d') ORDER BY id DESC");
+            stmt.setString(1, dateStr);
+            ResultSet rst = stmt.executeQuery();
+
+            while (rst.next()) {
+                Timestamp time = rst.getTimestamp("time");
+                String data = rst.getString("data");
+                String device = rst.getString("device");
+                result.add(new LogRow(time, data, device));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                dbConn.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        System.out.println(result.size());
         return result;
     }
 }

@@ -1,5 +1,6 @@
 //package ru.entel;
 //
+//import ru.entel.db.LogSaverDB;
 //import ru.entel.devices.Device;
 //import ru.entel.engine.Engine;
 //
@@ -17,8 +18,9 @@
 //        engine.run();
 //        while(true) {
 //            for (Device deivce : engine.getDevices().values()) {
-//                System.out.println(deivce.getValues());
+////                System.out.println(deivce.getValues());
 //            }
+//            LogSaverDB.getDataLogsByCurrentDate();
 //            try {
 //                Thread.sleep(1000);
 //            } catch (InterruptedException e) {
