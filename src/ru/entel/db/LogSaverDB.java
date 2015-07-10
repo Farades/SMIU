@@ -9,7 +9,7 @@ import java.util.*;
  * Created by Farades on 03.07.2015.
  */
 public class LogSaverDB {
-    public synchronized static ArrayList<LogRow> getDataLogsByDate(Date date) {
+    public synchronized static ArrayList<LogRow> getDataLogsByDate(java.util.Date date) {
         ArrayList<LogRow> result = new ArrayList<LogRow>();
         Connection dbConn = Database.getInstance().getConn();
         try {
@@ -35,7 +35,6 @@ public class LogSaverDB {
                 e.printStackTrace();
             }
         }
-        System.out.println(result.size());
         return result;
     }
 
@@ -66,7 +65,6 @@ public class LogSaverDB {
                 e.printStackTrace();
             }
         }
-        System.out.println(result.size());
         return result;
     }
 }
