@@ -1,5 +1,6 @@
 package ru.entel;
 
+import ru.entel.db.HistoryDeviceException;
 import ru.entel.db.LogSaverDB;
 import ru.entel.devices.Device;
 import ru.entel.engine.Engine;
@@ -20,7 +21,8 @@ public class Main {
             for (Device deivce : engine.getDevices().values()) {
 //                System.out.println(deivce.getValues());
             }
-            LogSaverDB.getDataLogsByCurrentDate();
+//            LogSaverDB.getDataLogsByCurrentDate();
+            System.out.println(HistoryDeviceException.getAlarmSize());
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException e) {

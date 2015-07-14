@@ -7,11 +7,15 @@ public class DeviceExceptionFromDb {
     private String description;
     private String time;
     private String state;
+    private String device;
+    private String value;
 
-    public DeviceExceptionFromDb(String description, String time, String state) {
+    public DeviceExceptionFromDb(String description, String time, String state, String device, String value) {
         this.description = description;
         this.time = time;
         this.state = state;
+        this.device = device;
+        this.value = value;
     }
 
     public String getDescription() {
@@ -27,5 +31,13 @@ public class DeviceExceptionFromDb {
 //            return "Начало";
 //        return "Конец";
         return state;
+    }
+
+    public String getDevice() {
+        return device;
+    }
+
+    public String getValue() {
+        return value;
     }
 }

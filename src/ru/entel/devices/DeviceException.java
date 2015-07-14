@@ -52,7 +52,7 @@ public class DeviceException {
     }
 
     public String getDescription() {
-        return this.deviceOwner + ": " + this.description;
+        return this.description;
     }
 
     public String getVarOwnerName() {

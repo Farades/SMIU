@@ -47,7 +47,7 @@ public class Engine {
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
-        logSaver = new LogSaver(this, 10);
+        logSaver = new LogSaver(this, 60);
     }
 
     public void run() {
