@@ -26,12 +26,7 @@ public class Device extends AbstractDevice implements Serializable {
     /**
      * Словарь, содержащий исключительные ситуации
      */
-    HashMap<String, ArrayList<DeviceException>> exceptions = new HashMap<String, ArrayList<DeviceException>>();
-
-    /**
-     * Сет, содержащий активные исключения для данного устройства
-     */
-    Set<DeviceException> activeExceptions = new HashSet<DeviceException>();
+    Set<DeviceException> alarms = new HashSet<DeviceException>();
 
     /**
      * Название устройства
@@ -69,12 +64,12 @@ public class Device extends AbstractDevice implements Serializable {
      *                       а значением является объект класса Binding.
      * @throws InitParamBindingsException Исключение, вызываемое передачей некорректных биндингов.
      */
-    public Device(String name, String description, DevType type, HashMap<String, Binding> paramsBindings, HashMap<String, ArrayList<DeviceException>> exceptions) throws InitParamBindingsException {
+    public Device(String name, String description, DevType type, HashMap<String, Binding> paramsBindings, Set<DeviceException> alarms) throws InitParamBindingsException {
         super(paramsBindings);
         this.name = name;
         this.description = description;
         this.type = type;
-        this.exceptions = exceptions;
+        this.alarms = alarms;
         if ((paramsBindings == null) || (paramsBindings.size() == 0)) {
             throw new InitParamBindingsException("Params bindings incorrect (==null or size == 0)");
         }
@@ -132,15 +127,15 @@ public class Device extends AbstractDevice implements Serializable {
                     //Обработка исключительных ситуаций
                     //Если для обновленной переменной объекта Device существуют исключительные ситуации, то проверяем
                     //Не произошла ли какая-либо исключительная ситуация
-                    if (this.exceptions.containsKey(cbEntrySet.getKey())) {
-                        for (DeviceException deviceException : exceptions.get(cbEntrySet.getKey())) {
-                            if (deviceException.check(value)) {
-                                this.activeExceptions.add(deviceException);
-                            } else {
-                                this.activeExceptions.remove(deviceException);
-                            }
-                        }
-                    }
+//                    if (this.alarms.containsKey(cbEntrySet.getKey())) {
+//                        for (DeviceException deviceException : alarms.get(cbEntrySet.getKey())) {
+//                            if (deviceException.check(value)) {
+//                                this.activeExceptions.add(deviceException);
+//                            } else {
+//                                this.activeExceptions.remove(deviceException);
+//                            }
+//                        }
+//                    }
                 } else {
                     throw new IncorrectDeviceBindingException("No register for binding: " + cbEntrySet.getValue());
                 }
@@ -157,6 +152,10 @@ public class Device extends AbstractDevice implements Serializable {
         return name;
     }
 
+    public Set<DeviceException> getAlarms() {
+        return alarms;
+    }
+
     public String getDescription() {
         return description;
     }
@@ -169,7 +168,4 @@ public class Device extends AbstractDevice implements Serializable {
         return type;
     }
 
-    public Set<DeviceException> getActiveExceptions() {
-        return activeExceptions;
-    }
 }

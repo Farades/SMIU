@@ -1,7 +1,9 @@
 package ru.entel.engine;
 
 import ru.entel.db.Database;
+import ru.entel.devices.AlarmsChecker;
 import ru.entel.devices.Device;
+import ru.entel.devices.DeviceException;
 import ru.entel.devices.LogSaver;
 import ru.entel.events.EventBusService;
 import ru.entel.protocols.service.ProtocolMaster;
@@ -11,6 +13,7 @@ import java.io.FileNotFoundException;
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by Farades on 22.05.2015.
@@ -20,6 +23,7 @@ public class Engine {
     private ProtocolMaster protocolMaster;
     private DataSource ds;
     private LogSaver logSaver;
+    private AlarmsChecker alarmsChecker;
 
     public Engine(DataSource ds) {
         this.ds = ds;
@@ -48,16 +52,23 @@ public class Engine {
             e.printStackTrace();
         }
         logSaver = new LogSaver(this, 60);
+        alarmsChecker = new AlarmsChecker(this, 1);
     }
 
     public void run() {
         new Thread(protocolMaster).start();
         new Thread(logSaver).start();
+        new Thread(alarmsChecker).start();
     }
 
     public void stop() {
         protocolMaster.stop();
         logSaver.stop();
+        alarmsChecker.stop();
+    }
+
+    public Map<String, Set<DeviceException>> getActiveAlarms() {
+        return alarmsChecker.getActiveException();
     }
 
     public Map<String, Device> getDevices() {

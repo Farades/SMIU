@@ -21,9 +21,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by Farades on 22.05.2015.
@@ -35,7 +33,7 @@ public class Configurator {
         String jsonStr = "";
         try {
             Statement stmt = dbConn.createStatement();
-            ResultSet rsts = stmt.executeQuery("SELECT * FROM JSON_CONFIG WHERE NAME='protocol'");
+            ResultSet rsts = stmt.executeQuery("SELECT * FROM json_config WHERE NAME='protocol'");
             while (rsts.next()) {
                 jsonStr = rsts.getString("data");
             }
@@ -87,7 +85,7 @@ public class Configurator {
         String jsonStr = "";
         try {
             Statement stmt = dbConn.createStatement();
-            ResultSet rsts = stmt.executeQuery("SELECT * FROM JSON_CONFIG WHERE NAME='devices'");
+            ResultSet rsts = stmt.executeQuery("SELECT * FROM json_config WHERE NAME='devices'");
             while (rsts.next()) {
                 jsonStr = rsts.getString("data");
             }
@@ -119,23 +117,24 @@ public class Configurator {
             }
             //Десереализация device exception'ов
             ArrayList jsonExceptions = (ArrayList)deviceParam.get("exceptions");
-            HashMap<String, ArrayList<DeviceException>> exceptions = new HashMap<String, ArrayList<DeviceException>>();
+            Set<DeviceException> alarms = new HashSet<DeviceException>();
             for (Object exception : jsonExceptions) {
                 Map jsonException = (Map)exception;
                 String varOwnerName = String.valueOf(jsonException.get("varOwnerName"));
                 String condition = String.valueOf(jsonException.get("condition"));
                 String description = String.valueOf(jsonException.get("description"));
                 DeviceException deviceException = new DeviceException(varOwnerName, devDescr, condition, description);
-                if (exceptions.containsKey(varOwnerName)) {
-                    exceptions.get(varOwnerName).add(deviceException);
-                } else {
-                    ArrayList<DeviceException> deviceExceptionArrayList = new ArrayList<DeviceException>();
-                    deviceExceptionArrayList.add(deviceException);
-                    exceptions.put(varOwnerName, deviceExceptionArrayList);
-                }
+//                if (exceptions.containsKey(varOwnerName)) {
+//                    exceptions.get(varOwnerName).add(deviceException);
+//                } else {
+//                    ArrayList<DeviceException> deviceExceptionArrayList = new ArrayList<DeviceException>();
+//                    deviceExceptionArrayList.add(deviceException);
+//                    exceptions.put(varOwnerName, deviceExceptionArrayList);
+//                }
+                alarms.add(deviceException);
             }
             try {
-                Device newDevice = new Device(devName, devDescr, devtype, bindings, exceptions);
+                Device newDevice = new Device(devName, devDescr, devtype, bindings, alarms);
                 res.put(devName, newDevice);
             } catch (InitParamBindingsException e) {
                 e.printStackTrace();

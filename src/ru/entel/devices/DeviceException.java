@@ -21,6 +21,7 @@ public class DeviceException {
     private String time_end;
     private AbstractRegister currentValue;
     private boolean active;
+    private ScriptEngine engine = new ScriptEngineManager().getEngineByName("js");
 
     public DeviceException(String varOwnerName, String deviceOwner, String condition, String description) {
         this.varOwnerName = varOwnerName;
@@ -32,7 +33,6 @@ public class DeviceException {
 
     public boolean check(AbstractRegister value) {
         this.currentValue = value;
-        ScriptEngine engine = new ScriptEngineManager().getEngineByName("js");
         String script = condition.replace(varOwnerName, value.toString());
         try {
             Boolean res = (Boolean)engine.eval(script);

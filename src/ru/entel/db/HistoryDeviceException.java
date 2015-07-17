@@ -14,7 +14,7 @@ public class HistoryDeviceException {
     public static void saveStartDeviceException(DeviceException deviceException) {
         Connection dbConn = Database.getInstance().getConn();
         try {
-            PreparedStatement stmt = dbConn.prepareStatement("INSERT INTO ALARM_LOG (data, time, state, device, value)  values (?, ?, ?, ?, ?)");
+            PreparedStatement stmt = dbConn.prepareStatement("INSERT INTO alarm_log (data, time, state, device, value)  values (?, ?, ?, ?, ?)");
             stmt.setString(1, deviceException.getDescription());
             stmt.setString(2, deviceException.getTime_start());
             stmt.setString(3, "start");
@@ -35,7 +35,7 @@ public class HistoryDeviceException {
     public static void saveEndDeviceException(DeviceException deviceException) {
         Connection dbConn = Database.getInstance().getConn();
         try {
-            PreparedStatement stmt = dbConn.prepareStatement("INSERT INTO ALARM_LOG (data, time, state, device, value)  values (?, ?, ?, ?, ?)");
+            PreparedStatement stmt = dbConn.prepareStatement("INSERT INTO alarm_log (data, time, state, device, value)  values (?, ?, ?, ?, ?)");
             stmt.setString(1, deviceException.getDescription());
             stmt.setString(2, deviceException.getTime_end());
             stmt.setString(3, "end");
@@ -58,7 +58,7 @@ public class HistoryDeviceException {
         Connection dbConn = Database.getInstance().getConn();
         try {
             Statement stmt = dbConn.createStatement();
-            ResultSet rst = stmt.executeQuery("SELECT COUNT(*) FROM ALARM_LOG");
+            ResultSet rst = stmt.executeQuery("SELECT COUNT(*) FROM alarm_log");
             while (rst.next()) {
                 res = rst.getInt(1);
             }
@@ -79,7 +79,7 @@ public class HistoryDeviceException {
         ArrayList<DeviceExceptionFromDb> res = new ArrayList<DeviceExceptionFromDb>();
         try {
             Statement stmt = dbConn.createStatement();
-            ResultSet rst = stmt.executeQuery("SELECT * FROM ALARM_LOG ORDER BY id DESC LIMIT " + first + ", " + pageSize);
+            ResultSet rst = stmt.executeQuery("SELECT * FROM alarm_log ORDER BY id DESC LIMIT " + first + ", " + pageSize);
             while (rst.next()) {
                 String description = rst.getString("data");
                 String time = rst.getString("time");

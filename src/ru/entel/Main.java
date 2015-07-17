@@ -19,10 +19,8 @@ public class Main {
         engine.run();
         while(true) {
             for (Device deivce : engine.getDevices().values()) {
-//                System.out.println(deivce.getValues());
+                System.out.println(deivce.getValues());
             }
-//            LogSaverDB.getDataLogsByCurrentDate();
-            System.out.println(HistoryDeviceException.getAlarmSize());
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
