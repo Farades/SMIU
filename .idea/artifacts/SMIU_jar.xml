@@ -8,6 +8,21 @@
       <element id="extracted-dir" path="$PROJECT_DIR$/libs/gson-2.3.1.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$PROJECT_DIR$/libs/mbassador-1.2.1.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$PROJECT_DIR$/libs/j2mod-1.03.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/libs/pi4j/pi4j-core-javadoc.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/libs/pi4j/pi4j-core-sources.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/libs/pi4j/pi4j-core.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/libs/pi4j/pi4j-device-javadoc.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/libs/pi4j/pi4j-device-sources.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/libs/pi4j/pi4j-device.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/libs/pi4j/pi4j-example-javadoc.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/libs/pi4j/pi4j-example-sources.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/libs/pi4j/pi4j-example.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/libs/pi4j/pi4j-gpio-extension-javadoc.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/libs/pi4j/pi4j-gpio-extension-sources.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/libs/pi4j/pi4j-gpio-extension.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/libs/pi4j/pi4j-service-javadoc.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/libs/pi4j/pi4j-service-sources.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/libs/pi4j/pi4j-service.jar" path-in-jar="/" />
     </root>
   </artifact>
 </component>
