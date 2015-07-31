@@ -39,6 +39,12 @@ public class Configurator {
             }
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            try {
+                dbConn.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
 
         Gson gson = new GsonBuilder().registerTypeAdapter(Object.class, new NaturalDeserializer()).create();
@@ -91,6 +97,12 @@ public class Configurator {
             }
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            try {
+                dbConn.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
 
         Gson gson = new GsonBuilder().registerTypeAdapter(Object.class, new NaturalDeserializer()).create();

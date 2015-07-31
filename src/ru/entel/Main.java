@@ -20,6 +20,7 @@ public class Main {
         while(true) {
             for (Device deivce : engine.getDevices().values()) {
                 System.out.println(deivce.getValues());
+                System.out.println(engine.getActiveAlarms());
             }
             try {
                 Thread.sleep(1000);
