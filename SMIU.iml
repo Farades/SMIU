@@ -14,18 +14,5 @@
     <orderEntry type="library" exported="" name="mbassador-1.2.1" level="project" />
     <orderEntry type="library" exported="" name="gson-2.3.1" level="project" />
     <orderEntry type="library" exported="" name="mysql-connector-java-5.0.8-bin" level="project" />
-    <orderEntry type="module-library" exported="">
-      <library>
-        <CLASSES>
-          <root url="file://$MODULE_DIR$/libs/pi4j" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES>
-          <root url="file://$MODULE_DIR$/libs/pi4j" />
-        </SOURCES>
-        <jarDirectory url="file://$MODULE_DIR$/libs/pi4j" recursive="false" />
-        <jarDirectory url="file://$MODULE_DIR$/libs/pi4j" recursive="false" type="SOURCES" />
-      </library>
-    </orderEntry>
   </component>
 </module>

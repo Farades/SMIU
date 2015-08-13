@@ -1,7 +1,5 @@
 package ru.entel;
 
-import ru.entel.db.HistoryDeviceException;
-import ru.entel.db.LogSaverDB;
 import ru.entel.devices.Device;
 import ru.entel.engine.Engine;
 
